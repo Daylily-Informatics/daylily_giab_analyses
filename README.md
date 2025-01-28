@@ -1,7 +1,8 @@
 # daylily_giab_analyses
 
-# `daylily` version `0.7.160`
-Used to create these reuslts
+# [`daylily` version `0.7.160`](https://github.com/Daylily-Informatics/daylily/releases/tag/0.7.160)
+
+[Was the version of the daylily ephemeral cluster and omics analysis framework used to build the compute resources and produce the following results](https://github.com/Daylily-Informatics/daylily/releases/tag/0.7.160).
 
 ## S3 Full Data Set
 - LINK
@@ -68,8 +69,9 @@ cp .test_data/data/giab_30x_hg38_analysis_manifest.csv config/analysis_manifest.
 
 dy-r produce_multiqc_final_wgs produce_snv_concordances produce_tiddit produce_manta produce_dysgu -p -k -j 1000 --config aligners=["bwa2a","sent","strobe"] dedupers=["dppl"]  snv_callers=["deep","clair3","oct","sentd","lfq2"] sv_callers=["manta","tiddit","dysgu"] -n
 
-# The first time a tool is executed on the cluster, its env is pulled or built and cached, so this first run will spend some time pulling envs (about 30m), future runs will not need to do this.
-dy-r produce_multiqc_final_wgs produce_snv_concordances produce_tiddit produce_manta produce_dysgu -p -k -j 1000 --config aligners=["bwa2a","sent","strobe"] dedupers=["dppl"]  snv_callers=["deep","clair3","oct","sentd","lfq2"] sv_callers=["manta","tiddit","dysgu"] -n
+# The first time a tool is executed on the cluster, its env is pulled or built and cached, so this first run will spend some time pulling envs (this can take an hour or more as we are pulliug in all of the data processing and MANY qc tools), future runs will not need to do this.
+
+dy-r produce_multiqc_final_wgs produce_snv_concordances produce_tiddit produce_manta produce_dysgu -p -k -j 1000 --config aligners=["bwa2a","sent","strobe"] dedupers=["dppl"]  snv_callers=["deep","clair3","oct","sentd","lfq2"] sv_callers=["manta","tiddit","dysgu"]
 
 ```
 
@@ -124,7 +126,7 @@ cp .test_data/data/giab_30x_b37_analysis_manifest.csv config/analysis_manifest.c
 dy-r produce_multiqc_final_wgs produce_snv_concordances produce_tiddit produce_manta produce_dysgu -p -k -j 1000 --config aligners=["bwa2a","sent","strobe"] dedupers=["dppl"]  snv_callers=["deep","clair3","oct","sentd","lfq2"] sv_callers=["manta","tiddit","dysgu"] -n
 
 
-dy-r produce_multiqc_final_wgs produce_snv_concordances produce_tiddit produce_manta produce_dysgu -p -k -j 1000 --config aligners=["bwa2a","sent","strobe"] dedupers=["dppl"]  snv_callers=["deep","clair3","oct","sentd","lfq2"] sv_callers=["manta","tiddit","dysgu"] -n
+dy-r produce_multiqc_final_wgs produce_snv_concordances produce_tiddit produce_manta produce_dysgu -p -k -j 1000 --config aligners=["bwa2a","sent","strobe"] dedupers=["dppl"]  snv_callers=["deep","clair3","oct","sentd","lfq2"] sv_callers=["manta","tiddit","dysgu"] 
 
 ```
 
@@ -204,6 +206,17 @@ _download and open the html file in a browser locally_
 * [hg 38 multiqc full report](data/qc_data/b37_7giab_DAY_final_multiqc.html)
 
 
+## Compute Resource Benchmarking And Cost Reporting
+
+`daylily` tracking benchmark performance for all tasks it runs, and in real time pulls the EC2 spot information, including price the spot costs, and with this information, calculates the efficency of each jobs use of the requested instance resources, as well as the COST for each task. Allowing identification of inefficent and cost driving tasks (which are often not what one would immediately predict).
+
+> Plots
+
 ## SNV Concordance
+
+> here
+
+
+# In Closing
 
 > here
