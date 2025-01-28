@@ -171,8 +171,11 @@ Be sure you have exported the analysis work you wish to preserve back to S3.  Th
 * This will block the terminal until deleted. If you loose the terminal, the job will not be interrupted.
 
 ## Review Cluster Costs
+_from aws console_
 
 - Each cluster has resource tagging to allow exquisite cost tracking of all resources involved in creating, running and deleting these clusters.
+
+- NOTE: costs can take a day or so to be fully reflected by AWS, this seems to not be the case for resources the cluster uses, but be aware there is potentially lag time in reporting.
 
 - Navigate to the `Cost Analysis` dashboard.
 
