@@ -1,8 +1,8 @@
 # daylily_giab_analyses
 
-# [`daylily` version `0.7.160`](https://github.com/Daylily-Informatics/daylily/releases/tag/0.7.160)
+# [`daylily` version `0.7.161`](https://github.com/Daylily-Informatics/daylily/releases/tag/0.7.161)
 
-[Was the version of the daylily ephemeral cluster and omics analysis framework used to build the compute resources and produce the following results](https://github.com/Daylily-Informatics/daylily/releases/tag/0.7.160).
+[Was the version of the daylily ephemeral cluster and omics analysis framework used to build the compute resources and produce the following results](https://github.com/Daylily-Informatics/daylily/releases/tag/0.7.161).
 
 ## S3 Full Data Set
 - LINK
