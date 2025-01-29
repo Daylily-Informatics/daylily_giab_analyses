@@ -311,6 +311,8 @@ cd daylily
 
 tmux new -s hg38_slim
 
+cp .test_data/data/giab_30x_hg38_analysis_manifest.csv config/analysis_manifest.csv
+
 . dyinit
 dy-a slurm hg38
 
@@ -329,7 +331,7 @@ dy-r produce_snv_concordances  -p -k -j 1000 --config aligners=["bwa2a"] deduper
 
 ```bash
 
-cd  /fsx/analysis_results/ubuntu/hg38/slim_test
+cd  /fsx/analysis_results/ubuntu/b37/slim_test
 
 tmux new -s b37_slim
 
@@ -338,6 +340,8 @@ cd daylily
 
 . dyinit
 dy-a slurm b37
+
+cp .test_data/data/giab_30x_b37_analysis_manifest.csv config/analysis_manifest.csv
 
 dy-r produce_snv_concordances  -p -k -j 1000 --config aligners=["bwa2a"] dedupers=["dppl"]  snv_callers=["deep"] -n
 
