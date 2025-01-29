@@ -5,29 +5,37 @@
 Contains the scripts used to analyze the `0.7.161` `daylily` dataset. 
 
 ### Conda Environment
+
 Create it with:
+
 ```bash
-conda create  -n DAYGIAB -c conda-forge python ipython pandas r-base matplotlib r-ggplot2 r-dplyr r-tidyr
+conda create  -n DAYGIAB -c conda-forge python ipython pandas r-base matplotlib r-ggplot2 r-dplyr r-tidyr seaborn r-readr  r-argparse
 conda activate DAYGIAB
-pip install ace_tools
+
 ```
 
 ## `bin` Dir Scripts
 The bin directory contains the scripts to analyze the three meta-artifact files produced when you [follow the steps below](#daylily-version-07161).
 
-### `./bin/generate_benchmark_stats.py`
+### Process Benchmarks Data
 
+#### Create Working Files
 ie:
-
 ```bash
-Rscript bin/generate_concordance_plots.R b37 data/src_data/b37_7giab_allvall_giab_concordance_mqc.tsv 
+python bin/generate_benchmark_stats_files.py data/src_data/hg38_7giab_benchmarks_summary.tsv hg38 hg38 ./hg38_tasks_costs_file.csv ./hg38_aggregated_metrics.tsv
 ```
 
-### `./bin/generate_concordance_plots.R
+#### Produce Plots
+ie:
+```bash
 
+```
+
+
+### Process Concordance Data Produced by `daylily`
 ie: 
 ```bash
-python bin/generate_benchmark_stats.py data/src_data/b37_7giab_benchmarks_summary.tsv b37 
+Rscript bin/generate_concordance_plots.R b37 data/src_data/b37_7giab_allvall_giab_concordance_mqc.tsv 
 ```
 > produces plots BUILD_*pdf and csv files ( notably, b37_sample_summary.csv ).
 
@@ -37,7 +45,10 @@ python bin/generate_benchmark_stats.py data/src_data/b37_7giab_benchmarks_summar
 [Was the version of the daylily ephemeral cluster and omics analysis framework used to build the compute resources and produce the following results](https://github.com/Daylily-Informatics/daylily/releases/tag/0.7.161).
 
 ## S3 Full Data Set
-- LINK
+
+`s3://daylily-service-omics-analysis-us-west-2/FSxLustre20250123T214325Z/analysis_results/ubuntu/`
+
+  > You will need to request access from me using `john@dyly.bio`.
 
 
 ## Cluster Creation
