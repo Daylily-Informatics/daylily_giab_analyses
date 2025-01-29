@@ -1,6 +1,31 @@
 # daylily_giab_analyses
 
-# [`daylily` version `0.7.161`](https://github.com/Daylily-Informatics/daylily/releases/tag/0.7.161)
+## This Reopo
+
+Contains the scripts used to analyze the `0.7.161` `daylily` dataset. 
+
+### Conda Environment
+Create it with:
+```bash
+conda create  -n DAYGIAB -c conda-forge python ipython pandas r-base
+```
+
+## `bin` Dir Scripts
+
+### `./bin/generate_benchmark_stats.py`
+ie:
+```bash
+Rscript bin/generate_concordance_plots.R b37 data/src_data/b37_7giab_allvall_giab_concordance_mqc.tsv 
+```
+
+### `./bin/generate_concordance_plots.R
+
+The bin directory contains the scripts to analyze the three meta-artifact files produced when you [follow the steps below](#daylily-version-07161).
+
+> 
+
+# `daylily` version `0.7.161`
+- [`daylily` version `0.7.161`](https://github.com/Daylily-Informatics/daylily/releases/tag/0.7.161)
 
 [Was the version of the daylily ephemeral cluster and omics analysis framework used to build the compute resources and produce the following results](https://github.com/Daylily-Informatics/daylily/releases/tag/0.7.161).
 
