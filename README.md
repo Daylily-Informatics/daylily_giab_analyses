@@ -19,25 +19,21 @@ The bin directory contains the scripts to analyze the three meta-artifact files 
 
 ### Process Benchmarks Data
 
-#### Create Working Files
+#### Create Working Files & Plots
 ie:
 ```bash
-python bin/generate_benchmark_stats_files.py data/src_data/hg38_7giab_benchmarks_summary.tsv hg38 hg38 ./hg38_tasks_costs_file.csv ./hg38_aggregated_metrics.tsv
+python bin/generate_benchmark_plots.R data/src_data/hg38_7giab_benchmarks_summary.tsv hg38 0.7.161
 ```
 
-#### Produce Plots
-ie:
-```bash
-
-```
+> produces data files and plots, found in `results/{hg38,b37}`.
 
 
-### Process Concordance Data Produced by `daylily`
+### Process Concordance Data Files + Plots
 ie: 
 ```bash
-Rscript bin/generate_concordance_plots.R b37 data/src_data/b37_7giab_allvall_giab_concordance_mqc.tsv 
+Rscript bin/generate_concordance_plots.R hg38 data/src_data/hg38_7giab_allvall_giab_concordance_mqc.tsv
 ```
-> produces plots BUILD_*pdf and csv files ( notably, b37_sample_summary.csv ).
+> produces data files and plots, found in `results/{hg38,b37}`.
 
 # `daylily` version `0.7.161`
 - [`daylily` version `0.7.161`](https://github.com/Daylily-Informatics/daylily/releases/tag/0.7.161)
