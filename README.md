@@ -262,19 +262,47 @@ _download and open the html file in a browser locally_
 
 ## Ran Spot Price Model
 
-> Determined `ap-south-1c` was the winner.
+Check the current pricing situation across AZs.
+
+```bash
+export AWS_PROFILE=default
+conda activate DAYCLI
+python bin/check_current_spot_market_by_zones.py --profile $AWS_PROFILE -o ./spot_check.tsv
+```
+
+> Extract the aws region-az you wish to use from this table.
 
 ## Created Ephemeral Cluster in `ap-south-1c`
 
-> done
+```bash
+export AWS_PROFILE=default
+bin/daylily-create-ephemeral-cluster --profile $AWS_PROFILE --region-az ap-south-1a
+```
+
 
 ## SSH To Headnode
+_not limited to ssh, also viable: SSM via the EC2 dashboard and the PCUI web dasboard._
 
-> go
+```bash
+ssh -i /Users/daylily/.ssh/daylily-omics-analysis-ap-south-1.pem ubuntu@3.7.155.236
+```
+
+## Create Analysis Dirs
+
+```bash
+mkdir -p /fsx/analysis_results/ubuntu/{hg38/slim_test,b37/slim_test}
+cd  /fsx/analysis_results/ubuntu/hg38/slim_test
+
+git clone https://github.com/Daylily-Informatics/daylily.git
+cd daylily
+
+```
 
 ## `hg38` analysis of all 7GIAB ONLY `bwamem2`, `doppelmark`, `deepvariant`
 
 ```bash
+
+tmux new -s hg38_slim
 
 . dyinit
 dy-a slurm hg38
@@ -293,6 +321,13 @@ dy-r produce_snv_concordances  -p -k -j 1000 --config aligners=["bwa2a"] deduper
 ## `b37`  analysis of all 7GIAB ONLY `bwamem2`, `doppelmark`, `deepvariant`
 
 ```bash
+
+cd  /fsx/analysis_results/ubuntu/hg38/slim_test
+
+tmux new -s b37_slim
+
+git clone https://github.com/Daylily-Informatics/daylily.git
+cd daylily
 
 . dyinit
 dy-a slurm b37
