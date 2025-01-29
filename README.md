@@ -7,22 +7,29 @@ Contains the scripts used to analyze the `0.7.161` `daylily` dataset.
 ### Conda Environment
 Create it with:
 ```bash
-conda create  -n DAYGIAB -c conda-forge python ipython pandas r-base
+conda create  -n DAYGIAB -c conda-forge python ipython pandas r-base matplotlib r-ggplot2 r-dplyr r-tidyr
+conda activate DAYGIAB
+pip install ace_tools
 ```
 
 ## `bin` Dir Scripts
+The bin directory contains the scripts to analyze the three meta-artifact files produced when you [follow the steps below](#daylily-version-07161).
 
 ### `./bin/generate_benchmark_stats.py`
+
 ie:
+
 ```bash
 Rscript bin/generate_concordance_plots.R b37 data/src_data/b37_7giab_allvall_giab_concordance_mqc.tsv 
 ```
 
 ### `./bin/generate_concordance_plots.R
 
-The bin directory contains the scripts to analyze the three meta-artifact files produced when you [follow the steps below](#daylily-version-07161).
-
-> 
+ie: 
+```bash
+python bin/generate_benchmark_stats.py data/src_data/b37_7giab_benchmarks_summary.tsv b37 
+```
+> produces plots BUILD_*pdf and csv files ( notably, b37_sample_summary.csv ).
 
 # `daylily` version `0.7.161`
 - [`daylily` version `0.7.161`](https://github.com/Daylily-Informatics/daylily/releases/tag/0.7.161)
@@ -248,3 +255,57 @@ _download and open the html file in a browser locally_
 # In Closing
 
 > here
+
+
+
+# Targeted Case Study
+
+## Ran Spot Price Model
+
+> Determined `ap-south-1c` was the winner.
+
+## Created Ephemeral Cluster in `ap-south-1c`
+
+> done
+
+## SSH To Headnode
+
+> go
+
+## `hg38` analysis of all 7GIAB ONLY `bwamem2`, `doppelmark`, `deepvariant`
+
+```bash
+
+. dyinit
+dy-a slurm hg38
+
+dy-r produce_snv_concordances  -p -k -j 1000 --config aligners=["bwa2a"] dedupers=["dppl"]  snv_callers=["deep"] -n
+
+dy-r produce_snv_concordances  -p -k -j 1000 --config aligners=["bwa2a"] dedupers=["dppl"]  snv_callers=["deep"] 
+
+```
+
+### Results
+
+> here
+
+
+## `b37`  analysis of all 7GIAB ONLY `bwamem2`, `doppelmark`, `deepvariant`
+
+```bash
+
+. dyinit
+dy-a slurm b37
+
+dy-r produce_snv_concordances  -p -k -j 1000 --config aligners=["bwa2a"] dedupers=["dppl"]  snv_callers=["deep"] -n
+
+dy-r produce_snv_concordances  -p -k -j 1000 --config aligners=["bwa2a"] dedupers=["dppl"]  snv_callers=["deep"] 
+
+
+```
+
+
+### Results
+
+> here
+
