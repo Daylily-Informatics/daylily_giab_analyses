@@ -21,12 +21,15 @@ conda activate DAYGIAB
 ---
 
 ## `bin` Dir Scripts
+
 The bin directory contains the scripts to analyze the three meta-artifact files produced when you [follow the steps below](#daylily-version-07161).
 
 ### Process Benchmarks Data
 
 #### Create Working Files & Plots
+
 ie:
+
 ```bash
 python bin/generate_benchmark_plots.R data/src_data/hg38_7giab_benchmarks_summary.tsv hg38 0.7.161
 ```
@@ -35,10 +38,13 @@ python bin/generate_benchmark_plots.R data/src_data/hg38_7giab_benchmarks_summar
 
 
 ### Process Concordance Data Files + Plots
+
 ie: 
+
 ```bash
 Rscript bin/generate_concordance_plots.R hg38 data/src_data/hg38_7giab_allvall_giab_concordance_mqc.tsv
 ```
+
 > produces data files and plots, found in `results/{hg38,b37}`.
 
 
@@ -46,6 +52,7 @@ Rscript bin/generate_concordance_plots.R hg38 data/src_data/hg38_7giab_allvall_g
 ---
 
 # `daylily` version `0.7.161`
+
 - [`daylily` version `0.7.161`](https://github.com/Daylily-Informatics/daylily/releases/tag/0.7.161)
 
 [Was the version of the daylily ephemeral cluster and omics analysis framework used to build the compute resources and produce the following results](https://github.com/Daylily-Informatics/daylily/releases/tag/0.7.161).
@@ -61,7 +68,9 @@ Rscript bin/generate_concordance_plots.R hg38 data/src_data/hg38_7giab_allvall_g
 ## Cluster Creation
 
 ### Determine Most Cost Effective Region
+
 _on your laptop	or whatnot_
+
 ```bash
 conda activate DAYCLI
 
@@ -76,6 +85,7 @@ Will produce cost estimate details for the specified availability zones. For exa
 ~[](docs/images/cost_predictions.png)
 
 ### Create An Ephemeral Cluster
+
 _on your laptop or whatnot_
 
 ```bash
@@ -102,6 +112,7 @@ ssh -i /Users/daylily/.ssh/daylily-omics-analysis-us-west-2.pem ubuntu@44.224.51
 
 
 ### With Genome Build `hg38`
+
 _from headnode_
 
 ```bash
@@ -137,6 +148,7 @@ Will look like:
 ![](docs/images/activated_env.png)
 
 #### `dryrun`
+
 The dryrun flag, `-n`, produces a plan for the workflow, which I always run as a sanity check before launching large jobs, and this looks like :
 
 ![](docs/images/workflow_explain.png)
@@ -159,6 +171,7 @@ tree -d	results/day/hg38
 
 
 ### With Genome Build `b37`
+
 _from headnode_
 
 > This may be done in parallel with the `hg38` jobs if you wish, they will be scheduled together if you run concurrently.
@@ -201,7 +214,9 @@ tree -d results/day/b37
 ---
 
 ## Migrate Data Back From The Cluster To S3
+
 To persist your work in `/fsx/analysis_results/ubuntu` back to the S3 bucket which was mounted to the fsx filesystem.
+
 ```bash
 bin/daylily-export-fsx-to-s3 day-oa-patch us-west-2 analysis_results/ubuntu
 # Usage: bin/daylily-export-fsx-to-s3 <cluster_name> <region> <export_path:analysis_results>
@@ -231,6 +246,7 @@ Be sure you have exported the analysis work you wish to preserve back to S3.  Th
 ---
 
 ## Review Cluster Costs
+
 _from aws console_
 
 - Each cluster has resource tagging to allow exquisite cost tracking of all resources involved in creating, running and deleting these clusters.
@@ -245,9 +261,13 @@ _from aws console_
 ---
 
 # `daylily` Analysis Results
+
 ---
+
 ## Data Organization
+
 ---
+
 ### Directories
 
 > here
@@ -266,10 +286,13 @@ _from aws console_
 ### `hg38`
 
 _download and open the html file in a browser locally_
+
 * [hg 38 multiqc full report](data/qc_data/hg38_7giab_DAY_final_multiqc.html)
 
 ### `b37`
+
 _download and open the html file in a browser locally_
+
 * [hg 38 multiqc full report](data/qc_data/b37_7giab_DAY_final_multiqc.html)
 
 
@@ -325,6 +348,7 @@ bin/daylily-create-ephemeral-cluster --profile $AWS_PROFILE --region-az ap-south
 ---
 
 ## SSH To Headnode
+
 _not limited to ssh, also viable: SSM via the EC2 dashboard and the PCUI web dasboard._
 
 ```bash
