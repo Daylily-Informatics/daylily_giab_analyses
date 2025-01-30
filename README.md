@@ -1,4 +1,5 @@
 # daylily_giab_analyses
+---
 
 ## This Reopo
 
@@ -13,6 +14,8 @@ conda create  -n DAYGIAB -c conda-forge python ipython pandas r-base matplotlib 
 conda activate DAYGIAB
 
 ```
+
+---
 
 ## `bin` Dir Scripts
 The bin directory contains the scripts to analyze the three meta-artifact files produced when you [follow the steps below](#daylily-version-07161).
@@ -35,6 +38,10 @@ Rscript bin/generate_concordance_plots.R hg38 data/src_data/hg38_7giab_allvall_g
 ```
 > produces data files and plots, found in `results/{hg38,b37}`.
 
+
+---
+---
+
 # `daylily` version `0.7.161`
 - [`daylily` version `0.7.161`](https://github.com/Daylily-Informatics/daylily/releases/tag/0.7.161)
 
@@ -46,6 +53,7 @@ Rscript bin/generate_concordance_plots.R hg38 data/src_data/hg38_7giab_allvall_g
 
   > You will need to request access from me using `john@dyly.bio`.
 
+---
 
 ## Cluster Creation
 
@@ -85,6 +93,8 @@ ssh -i /Users/daylily/.ssh/daylily-omics-analysis-us-west-2.pem ubuntu@44.224.51
 ![](docs/images/cluster_create_success.png)
 
 
+---
+
 ## Run Complete `daylily` WGS Analysis
 
 
@@ -114,7 +124,11 @@ dy-r produce_multiqc_final_wgs produce_snv_concordances produce_tiddit produce_m
 
 ```
 
+
 #### Actvating The Slurm Executor using `hg38`
+
+**note:** The benchmark data for this entire run is not representative b/c I mistakenly resized the FSX filesystem while everything was running full tilt. This caused zero job failures, but many jobs were hung for hours as FSX expanded and fought for IO wiht these 1000's of jobs.  Accuracy data is fine. Mostly, strobe aligner and deep variant were the impacted jobs.
+
 Will look like:
 
 ![](docs/images/activated_env.png)
@@ -181,6 +195,7 @@ tree -d results/day/b37
 
 ```
 
+---
 
 ## Migrate Data Back From The Cluster To S3
 To persist your work in `/fsx/analysis_results/ubuntu` back to the S3 bucket which was mounted to the fsx filesystem.
@@ -195,6 +210,7 @@ This will block the terminal as the FSX data under `/fsx/analysis_results/ubuntu
 
 * NOTE2: fsx export will do incremental exports. If you specify the same root path 2x, it will not move files which have not been changed since the last export.
 
+---
 
 ## Delete The Ephemeral Cluster
 
@@ -209,6 +225,8 @@ Be sure you have exported the analysis work you wish to preserve back to S3.  Th
 
 * This will block the terminal until deleted. If you loose the terminal, the job will not be interrupted.
 
+---
+
 ## Review Cluster Costs
 _from aws console_
 
@@ -220,11 +238,13 @@ _from aws console_
 
 - Set filters for: XXXXX
 
+---
+---
 
 # `daylily` Analysis Results
-
+---
 ## Data Organization
-
+---
 ### Directories
 
 > here
@@ -233,6 +253,8 @@ _from aws console_
 
 > here
 
+
+---
 
 ## QC Data
 
@@ -248,11 +270,16 @@ _download and open the html file in a browser locally_
 * [hg 38 multiqc full report](data/qc_data/b37_7giab_DAY_final_multiqc.html)
 
 
+---
+
 ## Compute Resource Benchmarking And Cost Reporting
 
 `daylily` tracking benchmark performance for all tasks it runs, and in real time pulls the EC2 spot information, including price the spot costs, and with this information, calculates the efficency of each jobs use of the requested instance resources, as well as the COST for each task. Allowing identification of inefficent and cost driving tasks (which are often not what one would immediately predict).
 
 > Plots
+
+
+---
 
 ## SNV Concordance
 
@@ -263,9 +290,13 @@ _download and open the html file in a browser locally_
 
 > here
 
+---
+---
 
 
 # Targeted Case Study
+
+---
 
 ## Ran Spot Price Model
 
@@ -279,6 +310,8 @@ python bin/check_current_spot_market_by_zones.py --profile $AWS_PROFILE -o ./spo
 
 > Extract the aws region-az you wish to use from this table.
 
+---
+
 ## Created Ephemeral Cluster in `ap-south-1c`
 
 ```bash
@@ -286,6 +319,7 @@ export AWS_PROFILE=default
 bin/daylily-create-ephemeral-cluster --profile $AWS_PROFILE --region-az ap-south-1a
 ```
 
+---
 
 ## SSH To Headnode
 _not limited to ssh, also viable: SSM via the EC2 dashboard and the PCUI web dasboard._
@@ -293,6 +327,8 @@ _not limited to ssh, also viable: SSM via the EC2 dashboard and the PCUI web das
 ```bash
 ssh -i /Users/daylily/.ssh/daylily-omics-analysis-ap-south-1.pem ubuntu@3.7.155.236
 ```
+
+---
 
 ## Create Analysis Dirs
 
@@ -304,6 +340,8 @@ git clone https://github.com/Daylily-Informatics/daylily.git
 cd daylily
 
 ```
+
+---
 
 ## `hg38` analysis of all 7GIAB ONLY `bwamem2`, `doppelmark`, `deepvariant`
 
@@ -326,6 +364,7 @@ dy-r produce_snv_concordances  -p -k -j 1000 --config aligners=["bwa2a"] deduper
 
 > here
 
+---
 
 ## `b37`  analysis of all 7GIAB ONLY `bwamem2`, `doppelmark`, `deepvariant`
 
