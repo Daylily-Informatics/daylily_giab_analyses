@@ -1,5 +1,7 @@
-# daylily_giab_analyses
+# daylily_giab_analyses ( a detailed treatment of results produced by [the daylily omic analysis framework](https://github.com/Daylily-Informatics/daylily) )
+
 *_WORK IN PROGRESS // EXPECT DATA TO CHANGE AS CLEANER RUNS COME IN_*
+
 ---
 
 ## This Reopo
