@@ -5,9 +5,9 @@ library(tidyr)
 
 # Accept genome build and data path from command line arguments
 args <- commandArgs(trailingOnly = TRUE)
-genome_build <- ifelse(length(args) > 0, args[1], "hg38")
-data_path <- ifelse(length(args) > 1, args[2], "src_data/hg38_7giab_allvall_benchmarks_summary.tsv")
-
+genome_build <- ifelse(length(args) > 0, args[1], "na")
+data_path <- ifelse(length(args) > 1, args[2], "na")
+anno <- ifelse(length(args) > 2, args[3], "na")
 # Read the data
 data <- read.table(data_path, header = TRUE, sep = "\t")
 
@@ -34,7 +34,7 @@ for (class in unique_classes) {
     # Generate plot
     p <- ggplot(metric_data, aes(x = interaction(Aligner, SNVCaller), y = Value, color = AltId)) +
       geom_point(size = 1.5, alpha = 0.7) +
-      labs(title = paste("Metric:", metric, "| SNP Class:", class, "| Genome Build:", genome_build),
+      labs(title = paste("Metric:", metric, "| SNP Class:", class, "| Genome Build:", genome_build , "| Annotation:", anno),
            x = "Aligner-SNV Caller",
            y = metric,
            color = "GIAB Sample") +
@@ -42,6 +42,6 @@ for (class in unique_classes) {
       theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
     # Save each metric's plot as a PDF
-    ggsave(filename = paste0("plot_", genome_build, "_", class, "_", metric, ".pdf"), plot = p, device = "pdf", width = 10, height = 6)
+    ggsave(filename = paste0("plot_", genome_build, "_", anno,"_", class, "_", metric, ".pdf"), plot = p, device = "pdf", width = 10, height = 6)
   }
 }
