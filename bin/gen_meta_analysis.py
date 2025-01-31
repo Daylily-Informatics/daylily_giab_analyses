@@ -17,8 +17,15 @@ def process_data(concordance_df, benchmarks_df, sample_info_df):
     align_tasks = benchmarks_df[benchmarks_df['rule'].str.contains('align', case=False)]
     snv_tasks = benchmarks_df[benchmarks_df['rule'].str.contains('snv|var|call', case=False)]
     
+    print("Available columns in benchmarks_df:", benchmarks_df.columns)
+    print("Available columns in align_time:", align_tasks.columns)
+    print("Available columns in snv_time:", snv_tasks.columns)
+    
     align_time = align_tasks.groupby("sample").agg({"cpu_time": "sum", "h:m:s": "sum", "task_cost": "sum"}).reset_index()
     snv_time = snv_tasks.groupby("sample").agg({"cpu_time": "sum", "h:m:s": "sum", "task_cost": "sum"}).reset_index()
+    
+    align_time.rename(columns={"task_cost": "task_cost_align"}, inplace=True)
+    snv_time.rename(columns={"task_cost": "task_cost_snv"}, inplace=True)
     
     sample_info_df.rename(columns={"Sample": "SampleID"}, inplace=True)
     sample_info_df["SampleID"] = sample_info_df["SampleID"].astype(str)
@@ -26,6 +33,8 @@ def process_data(concordance_df, benchmarks_df, sample_info_df):
     summary_df = concordance_df.merge(align_time, left_on="SampleID", right_on="sample", how="left", suffixes=("", "_align"))
     summary_df = summary_df.merge(snv_time, left_on="SampleID", right_on="sample", how="left", suffixes=("", "_snv"))
     summary_df = summary_df.merge(sample_info_df, on="SampleID", how="left")
+    
+    print("Final merged dataframe columns:", summary_df.columns)
     
     summary_df["cost_per_vcpu_GB_align"] = summary_df["task_cost_align"] / summary_df["InputFastqGB"]
     summary_df["cost_per_vcpu_GB_snv"] = summary_df["task_cost_snv"] / summary_df["InputFastqGB"]
