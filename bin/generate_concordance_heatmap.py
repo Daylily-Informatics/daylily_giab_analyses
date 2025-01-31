@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 import numpy as np
 
-def plot_heatmap(csv_file="variants.csv", metric_col="Fscore"):
+def plot_heatmap(csv_file="variants.csv", metric_col="Fscore", genome_build="na", ana_anno="na"):
     # 1) Read in the CSV
     df = pd.read_csv(csv_file, sep="\t")
 
@@ -59,13 +59,17 @@ def plot_heatmap(csv_file="variants.csv", metric_col="Fscore"):
         # 10) Formatting
         plt.xticks(rotation=45, ha="right")
         plt.yticks(rotation=0)
-        plt.title(f"{metric_col} by Pipeline & Sample (SNPClass: {snp_class})")
+        plt.title(f"{metric_col} by Pipeline & Sample (SNPClass: {snp_class}), {genome_build}, {ana_anno}")
 
         plt.tight_layout()
 
         # 11) Save and show the plot
-        plt.savefig(f"heatmap_{snp_class}.png", dpi=300)
+        plt.savefig(f"heatmap_{snp_class}_{genome_build}_{ana_anno}.png", dpi=300)
         plt.show()
 
 if __name__ == "__main__":
-    plot_heatmap(sys.argv[1], metric_col="Fscore")
+    file_n=sys.argv[1]
+    genome_build=sys.argv[2]
+    ana_anno=sys.argv[3]
+    metric_col=sys.argv[4] if len(sys.argv) > 4 else "Fscore"
+    plot_heatmap(sys.argv[1], metric_col, genome_build, ana_anno)
