@@ -21,17 +21,17 @@ def process_data(concordance_df, benchmarks_df, sample_info_df):
     print("Available columns in align_time:", align_tasks.columns)
     print("Available columns in snv_time:", snv_tasks.columns)
     
-    align_time = align_tasks.groupby("sample").agg({"cpu_time": "sum", "h:m:s": "sum", "task_cost": "sum"}).reset_index()
-    snv_time = snv_tasks.groupby("sample").agg({"cpu_time": "sum", "h:m:s": "sum", "task_cost": "sum"}).reset_index()
+    align_time = align_tasks.groupby("sample").agg({"cpu_time": "sum", "h:m:s": "first", "task_cost": "sum"}).reset_index()
+    snv_time = snv_tasks.groupby("sample").agg({"cpu_time": "sum", "h:m:s": "first", "task_cost": "sum"}).reset_index()
     
-    align_time.rename(columns={"task_cost": "task_cost_align"}, inplace=True)
-    snv_time.rename(columns={"task_cost": "task_cost_snv"}, inplace=True)
+    align_time.rename(columns={"task_cost": "task_cost_align", "cpu_time": "cpu_time_align", "h:m:s": "h:m:s_align"}, inplace=True)
+    snv_time.rename(columns={"task_cost": "task_cost_snv", "cpu_time": "cpu_time_snv", "h:m:s": "h:m:s_snv"}, inplace=True)
     
     sample_info_df.rename(columns={"Sample": "SampleID"}, inplace=True)
     sample_info_df["SampleID"] = sample_info_df["SampleID"].astype(str)
     
-    summary_df = concordance_df.merge(align_time, left_on="SampleID", right_on="sample", how="left", suffixes=("", "_align"))
-    summary_df = summary_df.merge(snv_time, left_on="SampleID", right_on="sample", how="left", suffixes=("", "_snv"))
+    summary_df = concordance_df.merge(align_time, left_on="SampleID", right_on="sample", how="left")
+    summary_df = summary_df.merge(snv_time, left_on="SampleID", right_on="sample", how="left")
     summary_df = summary_df.merge(sample_info_df, on="SampleID", how="left")
     
     print("Final merged dataframe columns:", summary_df.columns)
@@ -39,9 +39,15 @@ def process_data(concordance_df, benchmarks_df, sample_info_df):
     summary_df["cost_per_vcpu_GB_align"] = summary_df["task_cost_align"] / summary_df["InputFastqGB"]
     summary_df["cost_per_vcpu_GB_snv"] = summary_df["task_cost_snv"] / summary_df["InputFastqGB"]
     
-    summary_df = summary_df[["SampleID", "aligner", "snv_caller", "cpu_time_align", "cpu_time_snv",
-                             "h:m:s_align", "h:m:s_snv", "Fscore_All", "Fscore_SNPts", "Fscore_SNPtv",
-                             "task_cost_align", "task_cost_snv", "cost_per_vcpu_GB_align", "cost_per_vcpu_GB_snv"]]
+    selected_columns = ["SampleID", "aligner", "snv_caller", "cpu_time_align", "cpu_time_snv",
+                        "h:m:s_align", "h:m:s_snv", "Fscore_All", "Fscore_SNPts", "Fscore_SNPtv",
+                        "task_cost_align", "task_cost_snv", "cost_per_vcpu_GB_align", "cost_per_vcpu_GB_snv"]
+    
+    missing_columns = [col for col in selected_columns if col not in summary_df.columns]
+    if missing_columns:
+        print("Warning: The following columns are missing in summary_df:", missing_columns)
+    
+    summary_df = summary_df[[col for col in selected_columns if col in summary_df.columns]]
     return summary_df
 
 def generate_plots(summary_df):
