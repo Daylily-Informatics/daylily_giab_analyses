@@ -24,8 +24,9 @@ df["nproc"] = pd.to_numeric(df["nproc"], errors="coerce")
 df["task_cost"] = pd.to_numeric(df["task_cost"], errors="coerce")
 
 # Calculate theoretical minimum CPU time
-df["Theoretical_min_cpu_time"] = df["cpu_time"] / df["cpu_efficiency"]
-df["Theoretical_min_cpu_time"] = df["Theoretical_min_cpu_time"].replace([float('inf'), -float('inf')], None)
+#df["theoretical_min_cost"] = df["task_cost"] * (1-df["cpu_efficiency"])
+
+
 
 # Extract HG00# sample identifier
 df["HG_sample"] = df["sample"].str.extract(r'(HG\d+)')
@@ -69,6 +70,8 @@ plt.legend(title="Sample", loc='lower center', bbox_to_anchor=(0.5, -0.2), ncol=
 plt.tight_layout()
 plt.savefig(f"{args.identifier}_{args.genome_build}_aggregated_task_cost.png", dpi=300, bbox_inches='tight')
 plt.close()
+
+
 
 # Save aggregated metrics
 aggregated_df.to_csv(f"{args.identifier}_{args.genome_build}_aggregated_task_metrics.csv", index=False)
