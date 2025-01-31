@@ -1,3 +1,4 @@
+import sys
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
@@ -7,7 +8,7 @@ sns.set_theme(style="whitegrid", palette="colorblind")
 
 # 1) Load the table into a pandas DataFrame.
 #    Replace "variants.csv" with your actual file path.
-df = pd.read_csv("variants.csv", sep=",")
+df = pd.read_csv(sys.argv[1], sep="\t")
 
 # 2) Exclude any rows where `SNPClass` contains "_gt50".
 df = df[~df["SNPClass"].str.contains("_gt50")]
@@ -45,7 +46,7 @@ sns.scatterplot(
     style="Pipeline",
     s=100  # adjust point size
 )
-plt.title("Precision vs. Recall (All Variants, Ignoring _gt50)")
+plt.title("Precision vs. Recall (By Variant Type)")
 plt.xlim(0.95, 1.0)  # adjust to your data if needed
 plt.ylim(0.95, 1.0)
 plt.legend(bbox_to_anchor=(1.05, 1), loc="upper left")
