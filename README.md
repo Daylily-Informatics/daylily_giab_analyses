@@ -84,14 +84,14 @@ bin/generate_meta_analysis.py
 - [results/b37](results/b37) + `/benchmarks/concordance`
 
 ### Fscore, `SNPts` by sample, pipeline
-![](results/hg38/r2/concordance/heatmap_SNPts_b37_r1.png)
+![](results/b37/r1/concordance/heatmap_SNPts_b37_r1.png)
 
 ### Fscore, `SNPtv` by sample, pipeline
-![](results/hg38/r2/concordance/heatmap_SNPtv_b37_r1.png)
+![](results/b37/r1/concordance/heatmap_SNPtv_b37_r1.png)
 
 
 ## Costs Per Pipeline
-
+_3 pipelines only_
 *Costs For FQ->SNV*
 ![](results/b37/r1/benchmarks/0.7.161_b37_aggregated_task_cost.png)
 
