@@ -258,71 +258,13 @@ _from aws console_
 ---
 ---
 
-# `daylily` Analysis Results
+
+
+# Targeted Case Study (run just `bwa mem2` and `deepvariant` on all 7 GIAB in AZ `eu-central-1c`)
 
 ---
 
-## Data Organization
-
----
-
-### Directories
-
-> here
-
-### File Naming
-
-> here
-
-
----
-
-## QC Data
-
-> Multiqc wraps it all up
-
-### `hg38`
-
-_download and open the html file in a browser locally_
-
-* [hg 38 multiqc full report](data/qc_data/hg38_7giab_DAY_final_multiqc.html)
-
-### `b37`
-
-_download and open the html file in a browser locally_
-
-* [hg 38 multiqc full report](data/qc_data/b37_7giab_DAY_final_multiqc.html)
-
-
----
-
-## Compute Resource Benchmarking And Cost Reporting
-
-`daylily` tracking benchmark performance for all tasks it runs, and in real time pulls the EC2 spot information, including price the spot costs, and with this information, calculates the efficency of each jobs use of the requested instance resources, as well as the COST for each task. Allowing identification of inefficent and cost driving tasks (which are often not what one would immediately predict).
-
-> Plots
-
-
----
-
-## SNV Concordance
-
-> here
-
-
-# In Closing
-
-> here
-
----
----
-
-
-# Targeted Case Study
-
----
-
-## Ran Spot Price Model
+## Calculate Estimated Per Sample Analysis Costs Based On Current Spot Market Pricing
 
 Check the current pricing situation across AZs.
 
@@ -414,8 +356,9 @@ dy-r produce_snv_concordances  -p -k -j 1000 --config aligners=["bwa2a"] deduper
 
 ```
 
+# ANALYSIS RESULTS OF THESE DATA
 
-### Results
+> [SEE THE README](README.md)
 
-> here
+
 
