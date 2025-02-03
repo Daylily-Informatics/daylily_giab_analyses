@@ -1,4 +1,5 @@
-# Investigation of Results For 7 GIAB Samples Processed w/[daylily v0.7.161](https://github.com/Daylily-Informatics/daylily) & Running Aligners (`bwa mem2`, `sentieon bwa` & `strobe aligner`) + SNV Callers (`Sentieon DNAscope`, `deepvariant`, `clair3`, `octopus`, `lofreq2`)
+# Investigation of Results For 7 GIAB Samples Processed w/[daylily v0.7.161](https://github.com/Daylily-Informatics/daylily) 
+_Running Aligners (`bwa mem2`, `sentieon bwa` & `strobe aligner`) + SNV Callers (`Sentieon DNAscope`, `deepvariant`, `clair3`, `octopus`, `lofreq2`)_
 
 *_WORK IN PROGRESS // raw analysis complete, detailed investigations ongoing (as time permits)_*
 
@@ -61,7 +62,19 @@ bin/generate_meta_analysis.py
 
 ## Concordance Results
 
+### Fscore, `SNPts` by sample, pipeline
+![](results/hg38/r2/concordance/heatmap_SNPts_hg38_r2.png)
 
+### Fscore, `SNPtv` by sample, pipeline
+![](results/hg38/r2/concordance/heatmap_SNPtv_hg38_r2.png)
+
+## Costs Per Pipeline
+
+*Costs For FQ->SNV*
+![](results/hg38/eucentral-1/benchmarks/eucentral-1_hg38_raw_task_cost.png)
+
+*Costs For All(using more expensive AZ)*
+![](results/hg38/r2/benchmarks/r2_hg38_raw_task_cost.png)
 
 ###
 
@@ -77,4 +90,10 @@ bin/generate_meta_analysis.py
 ![](results/hg38/r2/concordance/heatmap_SNPtv_b37_r1.png)
 
 
+## Costs Per Pipeline
 
+*Costs For FQ->SNV*
+![](results/b37/r1/benchmarks/0.7.161_b37_aggregated_task_cost.png)
+
+*Costs For All(using more expensive AZ)*
+![](results/b37/r1/benchmarks/0.7.161_b37_raw_task_cost.png)
