@@ -159,7 +159,7 @@ def main(benchmarks_csv, concord_file, sample_info_file):
         for row in reader:
             # row has SNPClass, Sample, Fscore
             snp_class  = row["SNPClass"]   # e.g. SNPts, SNPtv, ...
-            sample_name+ =- row["Sample"] # e.g. "RIH0_ANA0-HG001-19_DBC0_0-bwa2a-deep-All"
+            sample_name = row["Sample"] # e.g. "RIH0_ANA0-HG001-19_DBC0_0-bwa2a-deep-All"
             fscore_val      = safe_float(row["Fscore"]) 
             aligner = row["Aligner"]
             varcaller = row["SNVCaller"]
