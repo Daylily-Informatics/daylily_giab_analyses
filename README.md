@@ -69,9 +69,9 @@ bin/generate_meta_analysis.py
 ![](results/hg38/r2/concordance/heatmap_SNPtv_hg38_r2.png)
 
 ## Costs Per Pipeline
-
+_using AZ ~2.5x > min spot market cost_
 *Costs For FQ->SNV*
-![](results/hg38/eucentral-1/benchmarks/eucentral-1_hg38_raw_task_cost.png)
+![](results/hg38/r2/benchmarks/r2_hg38_aggregated_task_cost.png)
 
 *Costs For All(using more expensive AZ)*
 ![](results/hg38/r2/benchmarks/r2_hg38_raw_task_cost.png)
