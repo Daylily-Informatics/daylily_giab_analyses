@@ -41,11 +41,15 @@ df["normalized_rule"] = df["rule"].apply(normalize_task_name)
 # Aggregate metrics for each sample and normalized rule
 aggregated_df = df.groupby(["sample", "normalized_rule"]).agg(
     Total_runtime_user=("s", "sum"),
-    Total_runtime_cpu=("cpu_time", "sum"),
+    Total_runtime_cpu=("cpu_time", lambda x: (x * df.loc[x.index, "snakemake_threads"]).sum()),  # Multiply before summing
     Total_cost=("task_cost", "sum"),
+    Total_snake_threads=("snakemake_threads", "sum"),
     Avg_cpu_efficiency=("cpu_efficiency", "mean"),
     Avg_task_cost=("task_cost", "mean")
 ).reset_index()
+
+# Compute Runtime_cpu_per_vcpu
+aggregated_df["Runtime_cpu_per_vcpu"] = aggregated_df["Total_runtime_cpu"] / aggregated_df["Total_snake_threads"]
 
 # Generate raw pre-aggregated boxplots with overlayed dots
 plt.figure(figsize=(12, max(8, len(df["rule"].unique()) * 0.3)))

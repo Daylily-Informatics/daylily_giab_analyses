@@ -137,6 +137,35 @@ dy-r produce_multiqc_final_wgs produce_snv_concordances produce_tiddit produce_m
 ```
 
 
+### Sentieon Toolset Case With Genome Build `hg38`
+
+_from headnode_
+
+```bash
+
+mkdir -p /fsx/analysis_results/ubuntu/sentieon_case_hg38
+cd /fsx/analysis_results/ubuntu/sentieon_case_hg38
+
+tmux new -s sent_hg38
+
+git clone https://github.com/Daylily-Informatics/daylily.git
+cd daylily
+. dyinit
+dy-a slurm hg38
+
+# copy the canned giab analysis ref reads. In practice, you will use a daylily helper script to create each `analysis_manifest.csv`
+cp .test_data/data/giab_30x_hg38_analysis_manifest.csv config/analysis_manifest.csv
+
+dy-r produce_snv_concordances -p -k -j 1000 --config aligners=["sent"] dedupers=["dppl"]  snv_callers=["sentd"] -n
+
+# The first time a tool is executed on the cluster, its env is pulled or built and cached, so this first run will spend some time pulling envs (this can take an hour or more as we are pulliug in all of the data processing and MANY qc tools), future runs will not need to do this.
+
+dy-r produce_snv_concordances -p -k -j 1000 --config aligners=["sent"] dedupers=["dppl"]  snv_callers=["sentd"]
+
+```
+
+
+
 #### Actvating The Slurm Executor using `hg38`
 
 **note:** The benchmark data for this entire run is not representative b/c I mistakenly resized the FSX filesystem while everything was running full tilt. This caused zero job failures, but many jobs were hung for hours as FSX expanded and fought for IO wiht these 1000's of jobs.  Accuracy data is fine. Mostly, strobe aligner and deep variant were the impacted jobs.

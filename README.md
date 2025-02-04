@@ -34,6 +34,13 @@ A large number of QC tools are used to offer insight into each workflow. These t
 >
 > ![](docs/images/b37_mqc_cost_stats.png)
 
+### Alignstats Data
+[Alignstats](https://github.com/jfarek/alignstats) is a tool which calculates extensive (*163*!) metrics for BAM/CRAM files. 
+
+- [hg38_us-west-2d_alignstats](data/us_west_2d/hg38_7giab_us-west-2d_alignstats.tsv)
+- [b37_us-west-2d_alignstats](data/us_west_2d/b37_7giab_us-west-2d_alignstats.tsv)
+- _Alignstats was not run for `eu-central-1c`, but is expected to be exactly the same as `hg38_us-west-2d` above_.
+
 
 ### Concordance Data (for both `hg38` and `b37`)
 `daylily` automatically will caclulate concordrance metrics for each sample for which there has been a truthset `vcf` specified.
@@ -222,6 +229,7 @@ The following is a *WIP*.
 ```bash
 
 conda activate DAYGIAB
+mkdir -p results/{us_west_2d,eu_central_1c}/{concordance,benchmarks}
 
 # Base Concordance Metrics
 Rscript bin/generate_concordance_plots.R hg38 data/us_west_2d/hg38_7giab_us-west-2d_giab_concordance_mqc.tsv usw2d
@@ -230,37 +238,35 @@ Rscript bin/generate_concordance_plots.R b37 data/us_west_2d/b37_7giab_us-west-2
 
 Rscript bin/generate_concordance_plots.R hg38 data/eu_central_1c/hg38_eu-central-1c_giab_concordances.tsv euc1c
 
-mv plot_hg38_usw2d_* results/us_wesdt_2d/concordance
+mv plot_hg38_usw2d_* results/us_west_2d/concordance
 mv plot_hg38_euc1c_* results/eu_central_1c/concordance
-mv plot_b37_usw2d_* results/us_wesdt_2d/concordance
+mv plot_b37_usw2d_* results/us_west_2d/concordance
 
 
 # HEATMAPS
-python bin/generate_concordance_heatmap.py data/us_west_2d/hg38_7giab_us-west-2d_giab_concordance_mqc.tsv hg38 usw1d
+python bin/generate_concordance_heatmap.py data/us_west_2d/hg38_7giab_us-west-2d_giab_concordance_mqc.tsv hg38 usw2d
  
-python bin/generate_concordance_heatmap.py data/us_west_2d/b37_7giab_us-west-2d_giab_concordance_mqc.tsv b37 usw1d
+python bin/generate_concordance_heatmap.py data/us_west_2d/b37_7giab_us-west-2d_giab_concordance_mqc.tsv b37 usw2d
 
 python bin/generate_concordance_heatmap.py data/eu_central_1c/hg38_eu-central-1c_giab_concordances.tsv hg38 euc1c
 
-mv heatmap_*usw1d* results/us_wesdt_2d/concordance
+mv heatmap_*usw2d* results/us_west_2d/concordance
 mv heatmap_*euc* results/eu_central_1c/concordance
 
 # Benchmarks Cost/Runtime
-python bin/generate_benchmark_plots.py data/us_west_2d/hg38_7giab_us-west-2d_benchmarks_summary.tsv hg38 usw1d
+python bin/generate_benchmark_plots.py data/us_west_2d/hg38_7giab_us-west-2d_benchmarks_summary.tsv hg38 usw2d
  
-python bin/generate_benchmark_plots.py data/us_west_2d/b37_7giab_us-west-2d_benchmarks_summary.tsv b37 usw1d
+python bin/generate_benchmark_plots.py data/us_west_2d/b37_7giab_us-west-2d_benchmarks_summary.tsv b37 usw2d
 
 python bin/generate_benchmark_plots.py data/eu_central_1c/hg38_eu-central-1c_benchmarks.tsv hg38 euc1c
 
 mv euc1c_hg38_* results/eu_central_1c/benchmarks
-mv usw1d_* results/us_wesdt_2d/benchmark
+mv usw2d_* results/us_west_2d/benchmarks
+
 
 # Meta Analysis
-python bin/generate_meta_analysis.py results/us_wesdt_2d/benchmarks/usw1d_hg38_aggregated_task_metrics.csv data/us_west_2d/hg38_7giab_us-west-2d_giab_concordance_mqc.tsv data/sample_info.csv hg38 usw2d
+python bin/generate_meta_analysis.py -b 
 
-python bin/generate_meta_analysis.py results/us_wesdt_2d/benchmarks/usw1d_b37_aggregated_task_metrics.csv  data/us_west_2d/b37_7giab_us-west-2d_giab_concordance_mqc.tsv data/sample_info.csv b37 usw2d
-
- python bin/generate_meta_analysis.py results/eu_central_1c/benchmarks/euc1c_hg38_aggregated_task_metrics.csv  data/eu_central_1c/hg38_eu-central-1c_giab_concordances.tsv data/sample_info.csv hg38 euc1c
 
 
 
@@ -324,7 +330,7 @@ python bin/generate_meta_analysis.py results/us_wesdt_2d/benchmarks/usw1d_b37_ag
 - []()
 - []()
 
-### b37 `us-west-1d`
+### b37 `us-west-2d`
 
 #### `SNPts` Fscore By Pipeline & Sample
 
@@ -345,7 +351,7 @@ python bin/generate_meta_analysis.py results/us_wesdt_2d/benchmarks/usw1d_b37_ag
 ## Recall vs Sens, by Pipeline & Sample
 
 
-### hg38 `us-west-1d`
+### hg38 `us-west-2d`
 
 ### All Data Points
 
@@ -414,7 +420,7 @@ python bin/generate_meta_analysis.py results/us_wesdt_2d/benchmarks/usw1d_b37_ag
 ![]()
 
 
-### b37 `us-west-1d`
+### b37 `us-west-2d`
 
 #### `cpu time`
 
@@ -429,4 +435,46 @@ python bin/generate_meta_analysis.py results/us_wesdt_2d/benchmarks/usw1d_b37_ag
 #### Spot Instance Compute Cost per Task per Sample
 
 ![]()
+
+---
+---
+
+# Case Study
+
+## Select An AZ With Favorable Spot Pricing, Analyze There!
+
+From the [daylily repo](), generate a spot instance pricing report.
+
+```bash
+ python bin/check_current_spot_market_by_zones.py --profile $AWS_PROFILE -o ./sentieon_case_study.csv --zones us-west-2a,us-west-2b,us-west-2c,us-west-2d,us-east-1a,ap-south-1a,eu-central-1a,eu-central-1b,eu-central-1c,ca-central-1a,ca-central-1b
+ ```
+  - [Spot market pricing data](data/sentieon_case_study.tsv).
+
+  ![](docs/images/small_spot_market_report.png)
+
+  > `eu-central-1c` has been among the cheapest and with reasonable stability for a few weeks. Proceed with this AZ to create an ephemeral cluster, run analysis, and clean it up when idle. **see daylily repo docs for how to create and run an ephemeral cluster**.
+
+
+
+## BWA MEM2 + DEEPVARIANT // Complete Ephemeral Cluster Cost Analysis _for_ 7 30x GIAB Samples, FASTQ->snv.VCF (bwa mem2, doppelmark, deepvariant)
+
+### $5.90 EC2 Costs per Sample // $6.72 Fully Burdened AWS Ephemeral Cluster Cost per Sample
+
+`daylily` tracks every AWS service involved in creating, running and tearing down ephemeral clusters. Below is the complete cost of running an ephemeral cluster to analyze 7 GIAB 30x fastq files using a `bwa mem2`+`doppelmark duplicates`+`deepvariant` pipeline. In this case, running vs `hg38`.
+
+> This ephemeral cluster was created in AZ `eu-central-1c` as it had a very favorable spot market for the `192vcpu` spot instances daylily relies upon, which cost **~$1.40/hr** at that time. 
+
+> This AZ had quota restrictions on how many spot instances could be run at one time, so it existed for 5hr. 
+>   - Fully parallelized without quota restrictions, the cluster would have completed processing in **1h 40m**.
+
+  ![](docs/images/hg38_eu-central-1c_ephemeral_cluster_AWS_complete_costs.jpg)
+
+  - `total AWS cost` (EC2, Fsx, networking, etc) to run this cluster = **$47.05**
+    - `total EC2 compute` cost = **$41.50**
+      - `active EC2 compute` cost as calculated from [hg38_eu-central-1c_benchmarks.tsv](data/eu_central_1c/hg38_eu-central-1c_benchmarks.tsv) = **$36.33**
+      - `idle EC2 compute` cost (`total EC2`-`active EC2`) = **$5.17** (_12% idle_)
+        - Idle time are vcpu seconds not actively in use by a job/task. 12% likely represents an upper bound, as this cluster was not running at capacity, and many jobs ran on partially utilized instances. This time can be dialed back by reducing the time threshold to teardown idle spot instances.
+
+
+## SENTIEON // Complete Ephemeral Cluster Cost Analysis _for_ 7 30x GIAB Samples, FASTQ->snv.VCF (sentieon bwa mem, doppelmark, sentieon DNAscope)
 
