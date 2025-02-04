@@ -24,9 +24,7 @@ df["nproc"] = pd.to_numeric(df["nproc"], errors="coerce")
 df["task_cost"] = pd.to_numeric(df["task_cost"], errors="coerce")
 
 # Calculate theoretical minimum CPU time
-#df["theoretical_min_cost"] = df["task_cost"] * (1-df["cpu_efficiency"])
-
-
+# df["theoretical_min_cost"] = df["task_cost"] * (1-df["cpu_efficiency"])
 
 # Extract HG00# sample identifier
 df["HG_sample"] = df["sample"].str.extract(r'(HG\d+)')
@@ -41,17 +39,22 @@ df["normalized_rule"] = df["rule"].apply(normalize_task_name)
 # Aggregate metrics for each sample and normalized rule
 aggregated_df = df.groupby(["sample", "normalized_rule"]).agg(
     Total_runtime_user=("s", "sum"),
-    Total_runtime_cpu=("cpu_time", lambda x: (x * df.loc[x.index, "snakemake_threads"]).sum()),  # Multiply before summing
+    # Multiply cpu_time by threads before summing to get "Total_runtime_cpu":
+    Total_runtime_cpu=("cpu_time", lambda x: (x * df.loc[x.index, "snakemake_threads"]).sum()),
     Total_cost=("task_cost", "sum"),
     Total_snake_threads=("snakemake_threads", "sum"),
     Avg_cpu_efficiency=("cpu_efficiency", "mean"),
     Avg_task_cost=("task_cost", "mean")
 ).reset_index()
 
-# Compute Runtime_cpu_per_vcpu
-aggregated_df["Runtime_cpu_per_vcpu"] = aggregated_df["Total_runtime_cpu"] / aggregated_df["Total_snake_threads"]
+# Compute Runtime_cpu_per_vcpu (optional)
+aggregated_df["Runtime_cpu_per_vcpu"] = (
+    aggregated_df["Total_runtime_cpu"] / aggregated_df["Total_snake_threads"]
+)
 
-# Generate raw pre-aggregated boxplots with overlayed dots
+# ---------------------
+# Raw pre-aggregated boxplot for Task Cost
+# ---------------------
 plt.figure(figsize=(12, max(8, len(df["rule"].unique()) * 0.3)))
 sns.boxplot(x="task_cost", y="rule", data=df, palette="pastel")
 sns.stripplot(x="task_cost", y="rule", data=df, hue="HG_sample", dodge=True, jitter=True, size=4, alpha=0.7)
@@ -63,7 +66,9 @@ plt.tight_layout()
 plt.savefig(f"{args.identifier}_{args.genome_build}_raw_task_cost.png", dpi=300, bbox_inches='tight')
 plt.close()
 
-# Generate aggregated boxplots with overlayed dots
+# ---------------------
+# Aggregated boxplot for Total Cost
+# ---------------------
 plt.figure(figsize=(12, max(8, len(aggregated_df["normalized_rule"].unique()) * 0.3)))
 sns.boxplot(x="Total_cost", y="normalized_rule", data=aggregated_df, palette="pastel")
 sns.stripplot(x="Total_cost", y="normalized_rule", data=aggregated_df, hue="sample", dodge=True, jitter=True, size=4, alpha=0.7)
@@ -75,7 +80,19 @@ plt.tight_layout()
 plt.savefig(f"{args.identifier}_{args.genome_build}_aggregated_task_cost.png", dpi=300, bbox_inches='tight')
 plt.close()
 
-
+# ---------------------
+# New boxplot for Total Runtime CPU
+# ---------------------
+plt.figure(figsize=(12, max(8, len(aggregated_df["normalized_rule"].unique()) * 0.3)))
+sns.boxplot(x="Total_runtime_cpu", y="normalized_rule", data=aggregated_df, palette="pastel")
+sns.stripplot(x="Total_runtime_cpu", y="normalized_rule", data=aggregated_df, hue="sample", dodge=True, jitter=True, size=4, alpha=0.7)
+plt.xlabel("Total Runtime CPU (core-seconds)", fontsize=12)
+plt.ylabel("Aggregated Rule", fontsize=12)
+plt.title("Total Runtime CPU Across Aggregated Rules", fontsize=14)
+plt.legend(title="Sample", loc='lower center', bbox_to_anchor=(0.5, -0.2), ncol=5, frameon=False, fontsize=10)
+plt.tight_layout()
+plt.savefig(f"{args.identifier}_{args.genome_build}_aggregated_runtime_cpu.png", dpi=300, bbox_inches='tight')
+plt.close()
 
 # Save aggregated metrics
 aggregated_df.to_csv(f"{args.identifier}_{args.genome_build}_aggregated_task_metrics.csv", index=False)

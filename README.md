@@ -229,29 +229,30 @@ The following is a *WIP*.
 ```bash
 
 conda activate DAYGIAB
-mkdir -p results/{us_west_2d,eu_central_1c}/{concordance,benchmarks}
+mkdir -p results/{us_west_2d,eu_central_1c}/{concordance/{boxplots,pvr,raw_metrics,heatmaps},benchmarks}
 
 # Base Concordance Metrics
-Rscript bin/generate_concordance_plots.R hg38 data/us_west_2d/hg38_7giab_us-west-2d_giab_concordance_mqc.tsv usw2d
+Rscript bin/generate_concordance_plots.R hg38 data/us_west_2d/hg38_7giab_us-west-2d_giab_concordance_mqc.tsv usw2d-all
 
-Rscript bin/generate_concordance_plots.R b37 data/us_west_2d/b37_7giab_us-west-2d_giab_concordance_mqc.tsv usw2d
+Rscript bin/generate_concordance_plots.R b37 data/us_west_2d/b37_7giab_us-west-2d_giab_concordance_mqc.tsv usw2d-all
 
-Rscript bin/generate_concordance_plots.R hg38 data/eu_central_1c/hg38_eu-central-1c_giab_concordances.tsv euc1c
+Rscript bin/generate_concordance_plots.R hg38 data/eu_central_1c/hg38_eu-central-1c_mem2-sent-combo_giab_concordance.tsv euc1c-two
 
-mv plot_hg38_usw2d_* results/us_west_2d/concordance
-mv plot_hg38_euc1c_* results/eu_central_1c/concordance
-mv plot_b37_usw2d_* results/us_west_2d/concordance
+
+mv plot_hg38_usw2d-all_* results/us_west_2d/concordance/raw_metrics
+mv plot_hg38_euc1c-two_* results/eu_central_1c/concordance/raw_metrics
+mv plot_b37_usw2d-all_* results/us_west_2d/concordance/raw_metrics
 
 
 # HEATMAPS
-python bin/generate_concordance_heatmap.py data/us_west_2d/hg38_7giab_us-west-2d_giab_concordance_mqc.tsv hg38 usw2d
+python bin/generate_concordance_heatmap.py data/us_west_2d/hg38_7giab_us-west-2d_giab_concordance_mqc.tsv hg38 usw2d-all
  
-python bin/generate_concordance_heatmap.py data/us_west_2d/b37_7giab_us-west-2d_giab_concordance_mqc.tsv b37 usw2d
+python bin/generate_concordance_heatmap.py data/us_west_2d/b37_7giab_us-west-2d_giab_concordance_mqc.tsv b37 usw2d-all
 
-python bin/generate_concordance_heatmap.py data/eu_central_1c/hg38_eu-central-1c_giab_concordances.tsv hg38 euc1c
+python bin/generate_concordance_heatmap.py data/eu_central_1c/hg38_eu-central-1c_giab_concordances.tsv hg38 euc1c-two
 
-mv heatmap_*usw2d* results/us_west_2d/concordance
-mv heatmap_*euc* results/eu_central_1c/concordance
+mv heatmap_*usw2d* results/us_west_2d/concordance/heatmaps
+mv heatmap_*euc* results/eu_central_1c/concordance/heatmaps
 
 # Benchmarks Cost/Runtime
 python bin/generate_benchmark_plots.py data/us_west_2d/hg38_7giab_us-west-2d_benchmarks_summary.tsv hg38 usw2d
@@ -262,6 +263,10 @@ python bin/generate_benchmark_plots.py data/eu_central_1c/hg38_eu-central-1c_ben
 
 mv euc1c_hg38_* results/eu_central_1c/benchmarks
 mv usw2d_* results/us_west_2d/benchmarks
+
+# Precision vs Recall & Boxplots
+
+python bin/generate_recall_v_precision.py -b hg38 -a usw2d-all -i data/us_west_2d/hg38_7giab_us-west-2d_giab_concordance_mqc.tsv -o ./hg38_usw2d-all_
 
 
 # Meta Analysis
