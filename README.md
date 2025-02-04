@@ -229,7 +229,7 @@ The following is a *WIP*.
 ```bash
 
 conda activate DAYGIAB
-mkdir -p results/{us_west_2d,eu_central_1c}/{concordance/{boxplots,pvr,raw_metrics,heatmaps},benchmarks}
+mkdir -p results/{us_west_2d,eu_central_1c}/{concordance/{boxplots,pvr,raw_metrics,heatmaps},benchmarks,meta}
 
 # Base Concordance Metrics
 Rscript bin/generate_concordance_plots.R hg38 data/us_west_2d/hg38_7giab_us-west-2d_giab_concordance_mqc.tsv usw2d-all
@@ -255,29 +255,40 @@ mv heatmap_*usw2d* results/us_west_2d/concordance/heatmaps
 mv heatmap_*euc* results/eu_central_1c/concordance/heatmaps
 
 # Benchmarks Cost/Runtime
-python bin/generate_benchmark_plots.py data/us_west_2d/hg38_7giab_us-west-2d_benchmarks_summary.tsv hg38 usw2d
+python bin/generate_benchmark_plots.py data/us_west_2d/hg38_7giab_us-west-2d_benchmarks_summary.tsv hg38 usw2d-all
  
-python bin/generate_benchmark_plots.py data/us_west_2d/b37_7giab_us-west-2d_benchmarks_summary.tsv b37 usw2d
+python bin/generate_benchmark_plots.py data/us_west_2d/b37_7giab_us-west-2d_benchmarks_summary.tsv b37 usw2d-all
 
-python bin/generate_benchmark_plots.py data/eu_central_1c/hg38_eu-central-1c_benchmarks.tsv hg38 euc1c
+python bin/generate_benchmark_plots.py data/eu_central_1c/hg38_eu-central-1c_mem2-sent-combo_benchmarks.tsv hg38 euc1c-two
 
-mv euc1c_hg38_* results/eu_central_1c/benchmarks
-mv usw2d_* results/us_west_2d/benchmarks
+mv euc1c-two_hg38_* results/eu_central_1c/benchmarks
+mv usw2d-all_* results/us_west_2d/benchmarks
 
 # Precision vs Recall & Boxplots
 
 python bin/generate_recall_v_precision.py -b hg38 -a usw2d-all -i data/us_west_2d/hg38_7giab_us-west-2d_giab_concordance_mqc.tsv -o ./hg38_usw2d-all_
+python bin/generate_recall_v_precision.py -b b37 -a usw2d-all -i data/us_west_2d/b37_7giab_us-west-2d_giab_concordance_mqc.tsv -o ./b37_usw2d-all_
+
+mv *usw2d*box* results/us_west_2d/concordance/boxplots
+mv *usw2d* results/us_west_2d/concordance/pvr
+
+python bin/generate_recall_v_precision.py -b hg38 -a euc1c-two -i data/eu_central_1c/hg38_eu-central-1c_mem2-sent-combo_giab_concordance.tsv -o ./hg38_euc1c-two_
+mv *box* results/eu_central_1c/concordance/boxplots
+mv *png results/eu_central_1c/concordance/pvr
 
 
 # Meta Analysis
-python bin/generate_meta_analysis.py -b 
 
+python bin/generate_meta_analysis.py -b results/us_west_2d/benchmarks/usw2d-all_hg38_aggregated_task_metrics.csv -c data/us_west_2d/hg38_7giab_us-west-2d_giab_concordance_mqc.tsv -a data/us_west_2d/hg38_7giab_us-west-2d_alignstats.tsv -o hg38_usw2d-all_meta_ana.tsv
 
+python bin/generate_meta_analysis.py -b results/us_west_2d/benchmarks/usw2d-all_b37_aggregated_task_metrics.csv -c data/us_west_2d/b37_7giab_us-west-2d_giab_concordance_mqc.tsv -a data/us_west_2d/b37_7giab_us-west-2d_alignstats.tsv -o b37_usw2d-all_meta_ana.tsv
 
+python bin/generate_meta_analysis.py -b results/eu_central_1c/benchmarks/euc1c-two_hg38_aggregated_task_metrics.csv -c data/eu_central_1c/hg38_eu-central-1c_mem2-sent-combo_giab_concordance.tsv -a data/us_west_2d/hg38_7giab_us-west-2d_alignstats.tsv -o hg38_euc1c-two_meta_ana.tsv
 
+mv *usw2d* results/us_west_2d/meta
+mv *euc1c* results/eu_central_1c/meta
 
-
-
+# WHEW!
 
 ```
 

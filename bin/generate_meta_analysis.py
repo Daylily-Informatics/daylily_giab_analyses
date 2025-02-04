@@ -5,7 +5,11 @@ import sys
 import argparse
 from collections import defaultdict, namedtuple
 
-# Named tuple or small class to hold aggregated pipeline metrics
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# Named tuple to hold aggregated pipeline metrics
 PipelineMetrics = namedtuple("PipelineMetrics", [
     "cpu_time",
     "wall_time",
@@ -15,34 +19,32 @@ PipelineMetrics = namedtuple("PipelineMetrics", [
 ])
 
 def parse_arguments():
-    parser = argparse.ArgumentParser(description="Process pipeline benchmark data and generate summary statistics.")
+    parser = argparse.ArgumentParser(
+        description="Process pipeline data, filter out dirsetupunknown, produce summary TSV and two boxplots."
+    )
     parser.add_argument("-b", "--benchmarks", required=True,
                         help="Path to aggregated_task_benchmark_metrics.csv")
-    parser.add_argument("-c","--concordance", required=True,
+    parser.add_argument("-c", "--concordance", required=True,
                         help="Path to concordance_results.tsv")
     parser.add_argument("-a", "--alignstats", required=True,
-                        help="Path to alignstats.tsv (contains YieldBases, coverage info, etc.)")
-    parser.add_argument("-o","--output", required=True,
-                        help="Path to output TSV file")
+                        help="Path to alignstats.tsv (contains YieldBases, coverage, etc.)")
+    parser.add_argument("-o", "--output", required=True,
+                        help="Path to output TSV file (plots will be saved alongside)")
     return parser.parse_args()
 
 def load_alignstats(alignstats_file):
     """
     Load alignstats info keyed by (sample, aligner).
-
-    Expected columns in alignstats_file (TSV-delimited) might include:
-      sample, aligner, YieldBases, WgsCoverageMedian, WgsCoverageMean, ...
-    Adjust to match your actual column names if different.
     """
     alignstats_data = {}
     with open(alignstats_file, "r") as f:
         reader = csv.DictReader(f, delimiter="\t")
         for row in reader:
+            # Example: derive sample name by removing the last '_' part
             sample = "_".join(row["sample"].split('_')[:-1])
-            # Construct a key that matches how we combine "sample" and "aligner" in the pipeline sums
-            key = (sample, row["aligner"])
-        
-            # Pull out numeric values safely. You may need to handle missing values or convert them.
+            aligner = row["aligner"]
+            key = (sample, aligner)
+
             yield_bases = float(row.get("YieldBases", 0.0))
             coverage_median = float(row.get("WgsCoverageMedian", 0.0))
             coverage_mean = float(row.get("WgsCoverageMean", 0.0))
@@ -54,36 +56,43 @@ def load_alignstats(alignstats_file):
             }
     return alignstats_data
 
-def main(benchmarks_csv, concord_file, alignstats_file, output_file):
-    # ----------------------------------------------------------------
-    # 1. Read alignstats data (for yield and coverage)
-    # ----------------------------------------------------------------
+def safe_float(x):
+    """Convert x to float, or 0.0 on failure."""
+    try:
+        return float(x)
+    except:
+        return 0.0
+
+def load_data(benchmarks_csv, concord_file, alignstats_file):
+    """
+    1) Parse benchmark CSV, aggregating by (sample, aligner, var_caller).
+    2) Parse concordance TSV, store f-scores in dict keyed by (sample, aligner, var_caller).
+    3) Parse alignstats, store coverage data in dict keyed by (sample, aligner).
+    4) Combine everything into a single list of rows (dicts) suitable for a DataFrame,
+       skipping rows where aligner/var_caller is 'dirsetupunknown'.
+    """
+    # --------------------------------------
+    # Load alignstats
+    # --------------------------------------
     alignstats_data = load_alignstats(alignstats_file)
 
-    # ----------------------------------------------------------------
-    # 2. Read aggregated_task_benchmark_metrics.csv
-    #    Aggregate by (sample, aligner, var_caller).
-    # ----------------------------------------------------------------
-    pipeline_sums = defaultdict(lambda: PipelineMetrics(0.0, 0.0, 0.0, 0.0, 0))
-
+    # --------------------------------------
+    # Aggregate tasks from benchmarks
+    # --------------------------------------
+    pipeline_sums = defaultdict(lambda: PipelineMetrics(0, 0, 0, 0, 0))
     with open(benchmarks_csv, "r") as f:
         reader = csv.DictReader(f)
         for row in reader:
             sample_raw = row["sample"].split('_DBC0')[0]
-            norm_rule = row["normalized_rule"]  # e.g. "bwa2a.deep.concordance" ...
-            
-            # Convert strings to float safely
-            cpu_time  = float(row.get("Total_runtime_cpu", 0.0))
-            # Some choose "Total_runtime_user" or "Total_runtime_wall" for "wall_time"
-            wall_time = float(row.get("Total_runtime_user", 0.0))
-            cost      = float(row.get("Total_cost", 0.0))
-            eff       = float(row.get("Avg_cpu_efficiency", 0.0))
-            
+            norm_rule = row["normalized_rule"]
 
-            # If there's no explicit num_task_threads column, either fix to 1 or parse from rule names
-            num_threads = float(row.get("Total_snake_threads", 1.0))
+            cpu_time  = safe_float(row.get("Total_runtime_cpu", 0.0))
+            # pick your "wall_time" column
+            wall_time = safe_float(row.get("Total_runtime_user", 0.0))
+            cost      = safe_float(row.get("Total_cost", 0.0))
+            eff       = safe_float(row.get("Avg_cpu_efficiency", 0.0))
+            num_threads = safe_float(row.get("Total_snake_threads", 1.0))
 
-            # A naive way to parse aligner/var_caller from the rule
             parts = norm_rule.split(".")
             if len(parts) < 2:
                 aligner = parts[0]
@@ -92,17 +101,20 @@ def main(benchmarks_csv, concord_file, alignstats_file, output_file):
                 aligner = parts[0]
                 var_caller = parts[1]
 
-            # canonical key: (sample, aligner, var_caller)
+            # -------- Skip if aligner or var_caller is 'dirsetupunknown' --------
+            if aligner == "dirsetupunknown" or var_caller == "dirsetupunknown":
+                continue
+
             key = (sample_raw, aligner, var_caller)
-
             old = pipeline_sums[key]
-            new_cpu_time  = old.cpu_time  + cpu_time
-            new_wall_time = old.wall_time + wall_time
-            new_cost      = old.cost      + cost
 
-            # Weighted average of CPU efficiency
+            new_cpu = old.cpu_time + cpu_time
+            new_wall = old.wall_time + wall_time
+            new_cost = old.cost + cost
+
+            # Weighted avg of CPU efficiency
             total_prev_cpu = old.cpu_time
-            combined_cpu   = total_prev_cpu + cpu_time
+            combined_cpu = total_prev_cpu + cpu_time
             if combined_cpu > 0:
                 weighted_eff = (
                     old.avg_cpu_efficiency * total_prev_cpu + eff * cpu_time
@@ -110,46 +122,39 @@ def main(benchmarks_csv, concord_file, alignstats_file, output_file):
             else:
                 weighted_eff = eff
 
-            # Use max threads or sum them. We'll just do max for demonstration:
+            # We'll just keep the max threads encountered
             new_threads = max(old.num_task_threads, num_threads)
 
             pipeline_sums[key] = PipelineMetrics(
-                cpu_time=new_cpu_time,
-                wall_time=new_wall_time,
+                cpu_time=new_cpu,
+                wall_time=new_wall,
                 cost=new_cost,
                 avg_cpu_efficiency=weighted_eff,
                 num_task_threads=new_threads
             )
 
-    # ----------------------------------------------------------------
-    # 3. Read concordance_results.tsv to get F-scores, etc.
-    # ----------------------------------------------------------------
-    ConcordMetrics = namedtuple("ConcordMetrics", ["fscore","TP","FP","FN"])
-
-    def safe_float(x):
-        try:
-            return float(x)
-        except:
-            return 0.0
-
-    concord_data = defaultdict(lambda: dict())  # e.g. concord_data[(sample, aligner, varcaller)][SNPts] -> Fscore
-
+    # --------------------------------------
+    # Load concordance
+    # --------------------------------------
+    concord_data = defaultdict(dict)
     with open(concord_file, "r") as f:
         reader = csv.DictReader(f, delimiter="\t")
         for row in reader:
-            snp_class  = row["SNPClass"]   # e.g. SNPts, SNPtv, ...
-            # We'll parse the sample similarly:
+            snp_class = row["SNPClass"]  # e.g. SNPts, SNPtv, ...
             sample_name = row["Sample"].split("_DBC0")[0]
             aligner = row.get("Aligner", "NA")
             varcaller = row.get("SNVCaller", "NA")
             fscore_val = safe_float(row.get("Fscore", 0.0))
 
-            # store it:
+            # -------- Skip if aligner or var_caller is 'dirsetupunknown' --------
+            if aligner == "dirsetupunknown" or varcaller == "dirsetupunknown":
+                continue
+
             key = (sample_name, aligner, varcaller)
             concord_data[key][snp_class] = fscore_val
 
-    # Optionally compute "SNPall" if you have separate SNPts, SNPtv
-    for key, class_dict in concord_data.items():
+    # Optionally compute "SNPall" if you have separate SNPts and SNPtv
+    for k, class_dict in concord_data.items():
         s_ts = class_dict.get("SNPts", 0.0)
         s_tv = class_dict.get("SNPtv", 0.0)
         if s_ts > 0 and s_tv > 0:
@@ -157,107 +162,134 @@ def main(benchmarks_csv, concord_file, alignstats_file, output_file):
         else:
             class_dict["SNPall"] = max(s_ts, s_tv)
 
-    # ----------------------------------------------------------------
-    # 4. Merge all data into a final table
-    # ----------------------------------------------------------------
-    out_fields = [
-        "Sample",
-        "aligner",
-        "var_caller",
-        "cpu_time",
-        "wall_time",
-        "compute_efficiency",
-        "num_task_threads",
-        "cost_per_task",
-        "per_vcpu_seconds",
-        "theoretical_min_cost_per_task",
-        "Fscore(all)",
-        "Fscore(SNPts)",
-        "Fscore(SNPtv)",
-        "Fscore(SNPall)",
-        "Fscore(INS50)",
-        "Fscore(Del50)",
-        "Fscore(Indel50)",
-        "YieldBases",
-        "WgsCoverageMedian",
-        "WgsCoverageMean",
-        "cost_per_vcpu_sec",
-        "cost_per_vcpu_sec_gb"
+    # --------------------------------------
+    # Create final list of row dicts
+    # --------------------------------------
+    final_rows = []
+    for (sample, aligner, varcaller), pm in pipeline_sums.items():
+        cpu_time = pm.cpu_time
+        wall_time = pm.wall_time
+        eff = pm.avg_cpu_efficiency
+        cost_per_task = pm.cost
+        threads = pm.num_task_threads
+
+        per_vcpu_sec = cpu_time / threads if threads > 0 else cpu_time
+        if eff > 0:
+            theoretical_min_cost = cost_per_task / eff
+        else:
+            theoretical_min_cost = cost_per_task
+
+        cdata = concord_data.get((sample, aligner, varcaller), {})
+        f_all    = cdata.get("All", 0.0)
+        f_snp_ts = cdata.get("SNPts", 0.0)
+        f_snp_tv = cdata.get("SNPtv", 0.0)
+        f_snpall = cdata.get("SNPall", 0.0)
+        f_ins50  = cdata.get("INS_50", 0.0)
+        f_del50  = cdata.get("DEL_50", 0.0)
+        f_ind50  = cdata.get("Indel_50", 0.0)
+
+        # Alignstats
+        alignrow = alignstats_data.get((sample, aligner), {})
+        yield_bases = alignrow.get("YieldBases", 0.0)
+        wgs_cov_median = alignrow.get("WgsCoverageMedian", 0.0)
+        wgs_cov_mean = alignrow.get("WgsCoverageMean", 0.0)
+
+        # cost_per_vcpu_sec
+        if per_vcpu_sec > 0:
+            cost_per_vcpu_sec = cost_per_task / per_vcpu_sec / threads
+        else:
+            cost_per_vcpu_sec = 0.0
+
+        # cost_per_vcpu_sec_gb
+        if yield_bases > 0:
+            cost_per_vcpu_sec_gb = cost_per_vcpu_sec / (yield_bases / 1e9)
+        else:
+            cost_per_vcpu_sec_gb = 0.0
+
+        rowdict = {
+            "Sample": sample,
+            "aligner": aligner,
+            "var_caller": varcaller,
+            "cpu_time": cpu_time,
+            "wall_time": wall_time,
+            "compute_efficiency": eff,
+            "num_task_threads": threads,
+            "cost_per_task": cost_per_task,
+            "per_vcpu_seconds": per_vcpu_sec,
+            "theoretical_min_cost_per_task": theoretical_min_cost,
+            "Fscore(all)": f_all,
+            "Fscore(SNPts)": f_snp_ts,
+            "Fscore(SNPtv)": f_snp_tv,
+            "Fscore(SNPall)": f_snpall,
+            "Fscore(INS50)": f_ins50,
+            "Fscore(Del50)": f_del50,
+            "Fscore(Indel50)": f_ind50,
+            "YieldBases": yield_bases,
+            "WgsCoverageMedian": wgs_cov_median,
+            "WgsCoverageMean": wgs_cov_mean,
+            "cost_per_vcpu_sec": cost_per_vcpu_sec,
+            "cost_per_vcpu_sec_gb": cost_per_vcpu_sec_gb
+        }
+        final_rows.append(rowdict)
+
+    return final_rows
+
+def write_tsv(rows, output_file):
+    """
+    Write list of row-dicts to a TSV file, with a consistent field order.
+    """
+    fields = [
+        "Sample", "aligner", "var_caller",
+        "cpu_time", "wall_time", "compute_efficiency", "num_task_threads",
+        "cost_per_task", "per_vcpu_seconds", "theoretical_min_cost_per_task",
+        "Fscore(all)", "Fscore(SNPts)", "Fscore(SNPtv)", "Fscore(SNPall)",
+        "Fscore(INS50)", "Fscore(Del50)", "Fscore(Indel50)",
+        "YieldBases", "WgsCoverageMedian", "WgsCoverageMean",
+        "cost_per_vcpu_sec", "cost_per_vcpu_sec_gb"
     ]
-
     with open(output_file, "w", newline="") as out_f:
-        writer = csv.DictWriter(out_f, fieldnames=out_fields, delimiter="\t")
+        writer = csv.DictWriter(out_f, fieldnames=fields, delimiter="\t")
         writer.writeheader()
+        for row in rows:
+            # Convert to string or format as needed
+            writer.writerow({fn: row[fn] for fn in fields})
 
-        for (sample, aligner, varcaller), pm in pipeline_sums.items():
-            cpu_time = pm.cpu_time
-            wall_time = pm.wall_time
-            eff = pm.avg_cpu_efficiency
-            cost_per_task = pm.cost
-            threads = pm.num_task_threads
+def plot_boxplot_by_pipeline(df, metric, output_tsv):
+    """
+    Create a boxplot + stripplot of <metric> vs. pipeline.
+    Saves to a PNG named like "<output_tsv>_boxplot_<metric>.png".
+    """
+    df['pipeline'] = df['aligner'] + "-" + df['var_caller']
 
-            # Some derived fields
-            per_vcpu_sec = cpu_time / threads if threads > 0 else cpu_time
-            if eff > 0:
-                theoretical_min = cost_per_task * (1.0 / eff)
-            else:
-                theoretical_min = cost_per_task
+    # Plot
+    plt.figure(figsize=(10, 6))
+    sns.boxplot(x='pipeline', y=metric, data=df, showfliers=False)
+    sns.stripplot(x='pipeline', y=metric, data=df, hue='Sample',
+                  dodge=True, jitter=True, alpha=0.7, size=2)
+    plt.xticks(rotation=45, ha='right')
+    plt.title(f"{metric} by Pipeline")
+    plt.tight_layout()
 
-            # Concordance data
-            cdata = concord_data.get((sample, aligner, varcaller), {})
-            f_all    = cdata.get("All", 0.0)
-            f_snp_ts = cdata.get("SNPts", 0.0)
-            f_snp_tv = cdata.get("SNPtv", 0.0)
-            f_snpall = cdata.get("SNPall", 0.0)
-            f_ins50  = cdata.get("INS_50", 0.0)
-            f_del50  = cdata.get("DEL_50", 0.0)
-            f_ind50  = cdata.get("Indel_50", 0.0)
+    out_png = output_tsv.replace(".tsv", f"_boxplot_{metric}.png")
+    plt.savefig(out_png)
+    plt.close()
+    print(f"Saved boxplot: {out_png}")
 
-            # Alignstats data (YieldBases, coverage, etc.)
-            #from IPython import embed; embed()
-            
-            arow = alignstats_data.get((sample, aligner), {})
-            yield_bases = arow.get("YieldBases", 0.0)
-            wgs_cov_median = arow.get("WgsCoverageMedian", 0.0)
-            wgs_cov_mean = arow.get("WgsCoverageMean", 0.0)
+def main():
+    args = parse_arguments()
 
-            # If we want to do cost-per-GB calculations using the `YieldBases` from alignstats:
-            #sample_gb = yield_bases / 1e9
-            denom =  per_vcpu_sec
-            if denom > 0.0:
-                per_cpv = cost_per_task / denom / threads
-            else:
-                per_cpv = 0.0
+    # 1) Load and filter data
+    rows = load_data(args.benchmarks, args.concordance, args.alignstats)
 
-            out_row = {
-                "Sample": sample,
-                "aligner": aligner,
-                "var_caller": varcaller,
-                "cpu_time": f"{cpu_time:.2f}",
-                "wall_time": f"{wall_time:.2f}",
-                "compute_efficiency": f"{eff:.3f}",
-                "num_task_threads": str(threads),
-                "cost_per_task": f"{cost_per_task:.6f}",
-                "per_vcpu_seconds": f"{per_vcpu_sec:.2f}",
-                "theoretical_min_cost_per_task": f"{theoretical_min:.6f}",
-                "Fscore(all)": f"{f_all:.6f}",
-                "Fscore(SNPts)": f"{f_snp_ts:.6f}",
-                "Fscore(SNPtv)": f"{f_snp_tv:.6f}",
-                "Fscore(SNPall)": f"{f_snpall:.6f}",
-                "Fscore(INS50)": f"{f_ins50:.6f}",
-                "Fscore(Del50)": f"{f_del50:.6f}",
-                "Fscore(Indel50)": f"{f_ind50:.6f}",
+    # 2) Write final TSV
+    write_tsv(rows, args.output)
 
-                "YieldBases": f"{yield_bases:.0f}",
-                "WgsCoverageMedian": f"{wgs_cov_median:.2f}",
-                "WgsCoverageMean": f"{wgs_cov_mean:.2f}",
+    # 3) Make DataFrame for plotting
+    df = pd.DataFrame(rows)
 
-                "cost_per_vcpu_sec": f"{per_cpv:.10f}",
-                
-                "cost_per_vcpu_sec_gb": f"{per_cpv / (yield_bases/1000000000.0):.20f}"  if yield_bases > 0.0 else -0.1
-            }
-            writer.writerow(out_row)
+    # 4) Produce two boxplots
+    plot_boxplot_by_pipeline(df, "cost_per_vcpu_sec", args.output)
+    plot_boxplot_by_pipeline(df, "cost_per_vcpu_sec_gb", args.output)
 
 if __name__ == "__main__":
-    args = parse_arguments()
-    main(args.benchmarks, args.concordance, args.alignstats, args.output)
+    main()
