@@ -1,8 +1,8 @@
 # ALL DATA FILES
 
-- [data](data)
+- [data](../../data)
 
 
 # ALL RESULTS FILES
 
-- [results](results)
+- [results](../../results)
