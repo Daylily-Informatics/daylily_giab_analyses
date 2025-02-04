@@ -105,9 +105,13 @@ For information on **installing or configuring** Daylily, please see the [Daylil
 
 ---
 
-## Data Sets & Pipeline Configurations
+## Analysis Pipeline DAG (excluding all QC modules)
+  <br><img src="https://github.com/Daylily-Informatics/daylily/blob/main/rule_dag.png" witdh="600" />
+
+## Data Sets 
 
 We analyzed **7 GIAB** samples (Illumina, ~30× coverage) on different references (hg38 or b37) in separate AWS regions/clusters, each with distinct aligners, variant callers, and QC steps.
+
 
 ### 1. `hg38_usw2d-all`  
 - **Reference**: hg38  
