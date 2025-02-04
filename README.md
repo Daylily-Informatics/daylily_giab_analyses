@@ -106,7 +106,7 @@ For information on **installing or configuring** Daylily, please see the [Daylil
 ---
 
 ## Analysis Pipeline DAG (excluding all QC modules)
-  <br><img src="https://github.com/Daylily-Informatics/daylily/blob/main/rule_dag.png" witdh="600" />
+  <br><a href="ttps://github.com/Daylily-Informatics/daylily" ><img src="https://github.com/Daylily-Informatics/daylily/blob/main/rule_dag.png" witdh="600" /></a>
 
 ## Data Sets 
 
