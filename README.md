@@ -268,7 +268,7 @@ From the [daylily repo](), generate a spot instance pricing report.
 
 `daylily` tracks every AWS service involved in creating, running and tearing down ephemeral clusters. Below is the complete cost of running an ephemeral cluster to analyze 7 GIAB 30x fastq files using a `bwa mem2`+`doppelmark duplicates`+`deepvariant` pipeline. In this case, running vs `hg38`.
 
-> This ephemeral cluster was created in AZ `eu-central-1c` as it had a very favorable spot market for the `192vcpu` spot instances daylily relies upon, which cost **~$1.40/hr** at that time. 
+> This ephemeral cluster was created in AZ `eu-central-1c` as it had a very favorable spot market for the `192vcpu` spot instances daylily relies upon, which cost **~$1.80/hr** at that time. 
 
 > This AZ had quota restrictions on how many spot instances could be run at one time, so it existed for 5hr. 
 >   - Fully parallelized without quota restrictions, the cluster would have completed processing in **1h 40m**.
@@ -282,6 +282,23 @@ From the [daylily repo](), generate a spot instance pricing report.
 
 
 ## SENTIEON // Complete Ephemeral Cluster Cost Analysis _for_ 7 30x GIAB Samples, FASTQ->snv.VCF (sentieon bwa mem, doppelmark, sentieon DNAscope)
+
+
+### $2.02 Avg EC2 Costs per Sample (some as low as $1/sample) // $2.26(ESTIMATED) Burdened AWS Ephemeral Cluster Cost per Sample
+
+`daylily` tracks every AWS service involved in creating, running and tearing down ephemeral clusters. Below is the complete cost of running an ephemeral cluster to analyze 7 GIAB 30x fastq files using a `sentieon bwa`+`doppelmark duplicates`+`sentieon DNAscope` pipeline. In this case, running vs `hg38`.
+
+> This ephemeral cluster was created in AZ `eu-central-1c` as it had a very favorable spot market for the `192vcpu` spot instances daylily relies upon, which cost **~$1.10/hr** at that time. 
+
+> This AZ had quota restrictions on how many spot instances could be run at one time, so it existed for ~3hr (creation takes ~20m, teardown takes ~20m). 
+>   - Fully parallelized without quota restrictions, the cluster would have completed processing all 7 GIAB samples in **58m**.
+  <br><img src="" width="600" /> **WILL UPDATE WHEN AWS COSTS ARE AVAIL via THE AWS DASH**
+
+  - `total AWS cost` (EC2, Fsx, networking, etc) to run this cluster = **$??.00**
+    - `total EC2 compute` cost = **$??.00**
+      - `active EC2 compute` cost as calculated from [hg38_eu-central-1c_SENTIEON_benchmarks.tsv](data/eu_central_1c/hg38_eu-central-1c_sentieon_benchmarks.tsv) = **$14.17**
+      - `idle EC2 compute` cost (`total EC2`-`active EC2`) = **$??** (_??% idle_)
+        - Idle time are vcpu seconds not actively in use by a job/task. ??% likely represents an upper bound, as this cluster was not running at capacity, and many jobs ran on partially utilized instances. This time can be dialed back by reducing the time threshold to teardown idle spot instances.
 
 ---
 
