@@ -243,6 +243,49 @@ This dataset underscores **Daylily**’s ephemeral cluster approach. The ability
 
 Feel free to explore the **raw_metrics** subfolders for CSV/TSV data if you want to do further custom analysis or re-plot these metrics.
 
+
+---
+---
+
+# Case Study
+
+## Select An AZ With Favorable Spot Pricing, Analyze There!
+
+From the [daylily repo](), generate a spot instance pricing report.
+
+```bash
+ python bin/check_current_spot_market_by_zones.py --profile $AWS_PROFILE -o ./sentieon_case_study.csv --zones us-west-2a,us-west-2b,us-west-2c,us-west-2d,us-east-1a,ap-south-1a,eu-central-1a,eu-central-1b,eu-central-1c,ca-central-1a,ca-central-1b
+ ```
+  - [Spot market pricing data](data/sentieon_case_study.tsv).
+
+  ![](docs/images/small_spot_market_report.png)
+
+  > `eu-central-1c` has been among the cheapest and with reasonable stability for a few weeks. Proceed with this AZ to create an ephemeral cluster, run analysis, and clean it up when idle. **see daylily repo docs for how to create and run an ephemeral cluster**.
+
+
+
+## BWA MEM2 + DEEPVARIANT // Complete Ephemeral Cluster Cost Analysis _for_ 7 30x GIAB Samples, FASTQ->snv.VCF (bwa mem2, doppelmark, deepvariant)
+
+### $5.90 EC2 Costs per Sample // $6.72 Fully Burdened AWS Ephemeral Cluster Cost per Sample
+
+`daylily` tracks every AWS service involved in creating, running and tearing down ephemeral clusters. Below is the complete cost of running an ephemeral cluster to analyze 7 GIAB 30x fastq files using a `bwa mem2`+`doppelmark duplicates`+`deepvariant` pipeline. In this case, running vs `hg38`.
+
+> This ephemeral cluster was created in AZ `eu-central-1c` as it had a very favorable spot market for the `192vcpu` spot instances daylily relies upon, which cost **~$1.40/hr** at that time. 
+
+> This AZ had quota restrictions on how many spot instances could be run at one time, so it existed for 5hr. 
+>   - Fully parallelized without quota restrictions, the cluster would have completed processing in **1h 40m**.
+
+  ![](docs/images/hg38_eu-central-1c_ephemeral_cluster_AWS_complete_costs.jpg)
+
+  - `total AWS cost` (EC2, Fsx, networking, etc) to run this cluster = **$47.05**
+    - `total EC2 compute` cost = **$41.50**
+      - `active EC2 compute` cost as calculated from [hg38_eu-central-1c_benchmarks.tsv](data/eu_central_1c/hg38_eu-central-1c_benchmarks.tsv) = **$36.33**
+      - `idle EC2 compute` cost (`total EC2`-`active EC2`) = **$5.17** (_12% idle_)
+        - Idle time are vcpu seconds not actively in use by a job/task. 12% likely represents an upper bound, as this cluster was not running at capacity, and many jobs ran on partially utilized instances. This time can be dialed back by reducing the time threshold to teardown idle spot instances.
+
+
+## SENTIEON // Complete Ephemeral Cluster Cost Analysis _for_ 7 30x GIAB Samples, FASTQ->snv.VCF (sentieon bwa mem, doppelmark, sentieon DNAscope)
+
 ---
 
 ## Concluding Thoughts & Next Steps
