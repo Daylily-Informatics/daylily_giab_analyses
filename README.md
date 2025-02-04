@@ -65,6 +65,29 @@
 #### 'Zoomed' Dataset, `All` Variant Classes, All Pipelines
   ![](results/us_west_2d/all/concordance/pvr/hg38_usw2d-all__All_zoom.png)
 
+#### Raw Concordance Metrics Dot Plots
+  - [results/us_west_2d/all/concordance/raw_metrics](results/us_west_2d/all/concordance/raw_metrics)
+
+
+### Benchmark Data
+
+#### Total CPU Time Per Task
+*note!*: the deepvariant times are artificially long in these data.
+![](results/us_west_2d/all/benchmarks/usw2d-all_hg38_aggregated_runtime_cpu.png)
+
+#### EC2 Spot Cost Per Task (All)
+*note!*: the deepvariant times are artificially long in these data.
+![](results/us_west_2d/all/benchmarks/usw2d-all_hg38_aggregated_task_cost.png)
+
+#### EC2 Spot Cost per Task (targeted)
+_these are `euc1c-two` data, and deep variant costs are acurate for the AZ spot price market at that time.
+![](results/eu_central_1c/two/benchmarks/euc1c-two_hg38_raw_task_cost.png)
+
+#### Cost per vcpu per GB input fastq
+_useful in predicting per-sample analysis costs in advance of starting an ephemeral cluster_
+*note!*: the deepvariant times are artificially long in these data.
+
+![](results/us_west_2d/all/meta/hg38_usw2d-all_meta_ana_boxplot_cost_per_vcpu_sec_gb.png)
 
 
 ---
