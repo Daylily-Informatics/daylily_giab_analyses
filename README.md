@@ -298,15 +298,15 @@ mv *euc1c* results/eu_central_1c/meta
 
 ### hg38 `us-west-2d`
 
-- [To review all of the raw concordance metrics plotted per sample & pipeline, see the pngs in this direcotry]().
+- [To review all of the raw concordance metrics plotted per sample & pipeline, see the pngs in this directory](results/us_west_2d/concordance/raw_metrics).
 
 ### hg38 `eu-central-1c`
 
-- [To review all of the raw concordance metrics plotted per sample & pipeline, see the pngs in this direcotry]().
+- [To review all of the raw concordance metrics plotted per sample & pipeline, see the pngs in this directory](results/eu_central_1c/concordance/raw_metrics).
 
 ### b37 `us-west-2d`
 
-- [To review all of the raw concordance metrics plotted per sample & pipeline, see the pngs in this direcotry]().
+- [To review all of the raw concordance metrics plotted per sample & pipeline, see the pngs in this directory](results/us_west_2d/concordance/raw_metrics).
 
 ---
 
@@ -317,11 +317,11 @@ mv *euc1c* results/eu_central_1c/meta
 
 #### `SNPts` Fscore By Pipeline & Sample
 
-![]()
+![](results/us_west_2d/concordance/heatmaps/heatmap_hg38_usw2d_SNPts.png)
 
 #### `SNPtv` Fscore By Pipeline & Sample
 
-![]()
+![](results/us_west_2d/concordance/heatmaps/heatmap_hg38_usw2d_SNPtv.png)
 
 #### (``,``,``,``) By Pipeline & Sample
 
@@ -334,11 +334,11 @@ mv *euc1c* results/eu_central_1c/meta
 
 #### `SNPts` Fscore By Pipeline & Sample
 
-![]()
+![](results/eu_central_1c/concordance/heatmaps/heatmap_hg38_euc1c_SNPts.png)
 
 #### `SNPtv` Fscore By Pipeline & Sample
 
-![]()
+![](results/eu_central_1c/concordance/heatmaps/heatmap_hg38_euc1c_SNPtv.png)
 
 #### (``,``,``,``) By Pipeline & Sample
 
@@ -350,11 +350,11 @@ mv *euc1c* results/eu_central_1c/meta
 
 #### `SNPts` Fscore By Pipeline & Sample
 
-![]()
+![](results/us_west_2d/concordance/heatmaps/heatmap_b37_usw2d_SNPts.png)
 
 #### `SNPtv` Fscore By Pipeline & Sample
 
-![]()
+![](results/us_west_2d/concordance/heatmaps/heatmap_b37_usw2d_SNPtv.png)
 
 #### (``,``,``,``) By Pipeline & Sample
 
@@ -371,33 +371,33 @@ mv *euc1c* results/eu_central_1c/meta
 
 ### All Data Points
 
-![]()
+![](results/us_west_2d/concordance/pvr/hg38_usw2d-all_recall_vs_precision.png)
 
 #### Best Performers
 
-![]()
+![](results/us_west_2d/concordance/pvr/hg38_usw2d-all_best_performers.png)
 
 
 ### hg38 `eu-central-1c`
 
 ### All Data Points
 
-![]()
+![](results/eu_central_1c/concordance/pvr/hg38_euc1c-two_recall_vs_precision.png)
 
 #### Best Performers
 
-![]()
+![](results/eu_central_1c/concordance/pvr/hg38_euc1c-two_best_performers.png)
 
 
 ### b37 `us-west-2d`
 
 ### All Data Points
 
-![]()
+![](results/us_west_2d/concordance/pvr/b37_usw2d-all_recall_vs_precision.png)
 
 #### Best Performers
 
-![]()
+![](results/us_west_2d/concordance/pvr/b37_usw2d-all_best_performers.png)
 
 ---
 
@@ -407,50 +407,50 @@ mv *euc1c* results/eu_central_1c/meta
 ### hg38 `us-west-2d`
 #### `cpu time`
 
-![]()
+![](results/us_west_2d/benchmarks/usw2d-all_hg38_cpu_time.png)
 
 
 #### `wall time`
 
-![]()
+![](results/us_west_2d/benchmarks/usw2d-all_hg38_wall_time.png)
 
 
 #### Spot Instance Compute Cost per Task per Sample
 
-![]()
+![](results/us_west_2d/benchmarks/usw2d-all_hg38_cost_per_task.png)
 
 
 ### hg38 `eu-central-1c`
 #### `cpu time`
 
-![]()
+![](results/eu_central_1c/benchmarks/euc1c-two_hg38_cpu_time.png)
 
 
 #### `wall time`
 
-![]()
+![](results/eu_central_1c/benchmarks/euc1c-two_hg38_wall_time.png)
 
 
 #### Spot Instance Compute Cost per Task per Sample
 
-![]()
+![](results/eu_central_1c/benchmarks/euc1c-two_hg38_cost_per_task.png)
 
 
 ### b37 `us-west-2d`
 
 #### `cpu time`
 
-![]()
+![](results/us_west_2d/benchmarks/usw2d-all_b37_cpu_time.png)
 
 
 #### `wall time`
 
-![]()
+![](results/us_west_2d/benchmarks/usw2d-all_b37_wall_time.png)
 
 
 #### Spot Instance Compute Cost per Task per Sample
 
-![]()
+![](results/us_west_2d/benchmarks/usw2d-all_b37_cost_per_task.png)
 
 ---
 ---
