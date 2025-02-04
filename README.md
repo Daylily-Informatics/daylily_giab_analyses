@@ -17,8 +17,8 @@
 # Escape Outdated ‘Best Practices’
   They were helpful at first, but our field is stuck in 2012. We need shareable frameworks that capture both accuracy and cost/runtime for truly reproducible pipeline performance—so we can finally move forward.
 
-
-> This repo will hold the analsis from reuslts of the first stable release of `daylily` running on 7 GIAB samples. Again, not only to highlight the tools I've chosen, but to highlight this approach.
+# A Paper, Initially White
+This repo will hold the analsis from reuslts of the first stable release of `daylily` running on 7 GIAB samples. [The outcome of these analyses will be a whitepaper (actively being drafted)](docs/whitepaper_draft.md).
 
 
 
