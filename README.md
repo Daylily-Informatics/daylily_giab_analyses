@@ -173,7 +173,7 @@ Each dataset analyzed here includes:
 
 ---
 
-### Analysis & Results
+### Analysis & Results (CHATGPT CREATED... TO BE PROOFREAD!!!)
 
 Below, we highlight key plots and observations from the **three** main datasets. Additional figures and tables can be found under each dataset’s `concordance/` and `benchmarks/` subdirectories.
 
@@ -184,13 +184,13 @@ Below, we highlight key plots and observations from the **three** main datasets.
 - **Technical Interruption**: A **resizing** of FSX inflated run times for some tasks, leading to higher computed costs.  
 - **Interesting Plots**:  
   - **Cost per vCPU-second per GB** boxplots (see `results/us_west_2d/all/concordance/boxplots/`):  
-    <br><img src="results/us_west_2d/all/concordance/boxplots/cost_per_vcpu_sec_gb_boxplot.png" width="400" />
+    <br><img src="results/us_west_2d/all/meta/hg38_usw2d-all_meta_ana_boxplot_cost_per_vcpu_sec_gb.png" width="400" />
     - *Observation:* BWA-MEM2 + DeepVariant shows relatively lower cost per vCPU-second per GB. Strobealign + DNAscope is comparable, but higher standard deviation.  
   - **F-score Heatmaps** (see `heatmaps/`):  
-    <br><img src="results/us_west_2d/all/concordance/heatmaps/snp_fscore_heatmap.png" width="400" />
+    <br><img src="results/us_west_2d/all/concordance/heatmaps/heatmap_All_hg38_usw2d-all.png" width="400" />
     - *Observation:* DNAscope and DeepVariant consistently hit high F-scores for SNP transitions and transversions across samples.  
   - **Precision-vs-Recall** (PVR) plots (`pvr/`):  
-    <br><img src="results/us_west_2d/all/concordance/pvr/pvr_plot.png" width="400" />
+    <br><img src="results/us_west_2d/all/concordance/pvr/hg38_usw2d-all__All_zoom.png" width="400" />
     - *Observation:* Points cluster near top-right for most aligner+caller combos, but we see slight differences in recall for Indels vs. SNPs.  
 
 Despite the FSX interruption, these runs confirm:
