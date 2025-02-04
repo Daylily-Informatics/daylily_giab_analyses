@@ -1,7 +1,71 @@
 
 # Daylily Ifx Analysis Framework (GIAB Benchmarking)
 
-This repository presents a special **Daylily** analysis project aimed at **formalizing the first stable release** of [Daylily](https://github.com/Daylily-Informatics/daylily) and **providing a foundation** for an upcoming publication (see [whitepaper draft](docs/whitepaper_draft.md)). The analyses highlight **Daylily’s** ability to run automated, cost-effective WGS pipelines on ephemeral AWS clusters, capturing a **broader range** of metrics than typical WGS comparisons (including comprehensive cost tracking and estimation, compute instance performance metrics, extensive bioinformatics metrics, data integrity, coverage, and extensive concordance metrics for variant callers (F-scores, Recall, Precision, Sensitivity, FDP, PPV) & all of this data managed in such a way as to enable better informed comparisons between bfx tools.
+
+
+# Intention
+
+> The goal of daylily is to enable more rigorous comparisons of informatics tools by formalizing the compute environment these tools run in, and establishing hardware profiles for tools which will reproduce both accuracy and runtime/cost perofrmance of each tool. This is intended to be a general approach and is not married to any specific toolset (of course AWS is involved. I have not made any design choices which would prevent this work from running outside AWS. AWS does offer the signicant benefit of affording a standardized compute hardware environment anyone who sets up an account may access). I should stress, that by 'compute environment', I mean more than simply offering a container. Containers do not guaruntee hardware perofrmance, and as runtime/cost becomes a significant driver in choosing tooling, we need ways to assert reproducible s/w performance on given hardware. Containers are used throughout daylily, as is conda. I strive to not get too tied to specicif tools. I have three main aims:
+
+Shift Focus
+Move away from unhelpful debates over “the best” tool and toward evidence-based evaluations. Real use cases dictate tool choice, so let’s make sure relevant data and clear methodologies are accessible—or at least ensure enough detail is published to make meaningful comparisons. Specifically, I wish to move away from scant and overly reductive metrics which fail to describe our tools in as rich detail as they can be. ie:
+> If I am looking for the best possible `recall` in SNV calling, initial data suggestes I might look towards [`sentieon bwa`+`sentieon DNAscope`](https://www.sentieon.com/) ... and interestingly, if I wanted the best possible `precision`, it would be worth investigating [https://github.com/ksahlin/strobealign]`strobealigner`]() + `deepvariant` _[REF DATA](results/us_west_2d/all/concordance/pvr/hg38_usw2d-all__All_zoom.png). `Fscore` would not be as informative for these more sepcific cases.
+
+Raise the Bar
+Demand better metrics and documentation in tool publications: thorough cost data, specific and reproducible hardware details, more nuanced concordance metrics, and expansive QC reporting. Half-measures shouldn’t pass as “sufficient.”
+
+Escape Outdated ‘Best Practices’
+They were helpful at first, but our field is stuck in 2012. We need shareable frameworks that capture both accuracy and cost/runtime for truly reproducible pipeline performance—so we can finally move forward.
+
+
+> This repo will hold the analsis from reuslts of the first stable release of `daylily` running on 7 GIAB samples. Again, not only to highlight the tools I've chosen, but to highlight this approach.
+
+
+
+---
+## Data Preview
+
+> [You can find the full GIAB dataset analysis here- WIP](docs/data/overview.md)
+
+### Concordance Metrics (Fscore, Recall, Precision, FDR, PPV, Sensitivity), by Sample, by Pipeline, by Variant Class 
+- [All Plots For hg38-usw2d-all](results/us_west_2d/all/concordance/boxplots)
+  ![](results/us_west_2d/all/concordance/boxplots/hg38_usw2d-all__All_boxplots.png)
+
+### Heatmaps
+- [All Heatmaps For hg38-usw2d-all](results/us_west_2d/all/concordance/heatmaps)
+
+#### SNPts F-scores For 7 30x ILMN GIAB Samples, 3 Aligners, 5 SNV Callers (hg38)
+
+  ![](results/us_west_2d/all/concordance/heatmaps/heatmap_SNPts_hg38_usw2d-all.png)
+
+
+#### SNPtv F-scores For 7 30x ILMN GIAB Samples, 3 Aligners, 5 SNV Callers (hg38)
+
+  ![](results/us_west_2d/all/concordance/heatmaps/heatmap_SNPtv_hg38_usw2d-all.png)
+
+#### Insertions < 50bp F-scores For 7 30x ILMN GIAB Samples, 3 Aligners, 5 SNV Callers (hg38)
+
+  ![](results/us_west_2d/all/concordance/heatmaps/heatmap_INS_50_hg38_usw2d-all.png)
+
+#### Deletions < 50bp F-scores For 7 30x ILMN GIAB Samples, 3 Aligners, 5 SNV Callers (hg38)
+
+  ![](results/us_west_2d/all/concordance/heatmaps/heatmap_INS_50_hg38_usw2d-all.png)
+
+
+### Precision vs Recall
+- [All PvR For hg38-usw2d-all](results/us_west_2d/all/concordance/pvr)
+
+#### Full Dataset, `All` Variant Classes, All Pipelines
+
+> Best Recall `sentieon bwa`+`sentieon DNAscope` == 0.9961
+> Best Precision `strobe aligner`+`deepvariant` == 0.9993
+
+  ![](results/us_west_2d/all/concordance/pvr/hg38_usw2d-all__All.png)
+
+#### 'Zoomed' Dataset, `All` Variant Classes, All Pipelines
+  ![](results/us_west_2d/all/concordance/pvr/hg38_usw2d-all__All_zoom.png)
+
+
 
 ---
 
