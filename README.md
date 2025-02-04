@@ -29,27 +29,26 @@
 
 ### Concordance Metrics (Fscore, Recall, Precision, FDR, PPV, Sensitivity), by Sample, by Pipeline, by Variant Class 
 - [All Plots For hg38-usw2d-all](results/us_west_2d/all/concordance/boxplots)
-  <img src="results/us_west_2d/all/concordance/boxplots/hg38_usw2d-all__All_boxplots.png"
-
+  <img src="results/us_west_2d/all/concordance/boxplots/hg38_usw2d-all__All_boxplots.png" width="500" />
 ### Heatmaps
 - [All Heatmaps For hg38-usw2d-all](results/us_west_2d/all/concordance/heatmaps)
 
 #### SNPts F-scores For 7 30x ILMN GIAB Samples, 3 Aligners, 5 SNV Callers (hg38)
 
-  <img src="results/us_west_2d/all/concordance/heatmaps/heatmap_SNPts_hg38_usw2d-all.png">
+  <img src="results/us_west_2d/all/concordance/heatmaps/heatmap_SNPts_hg38_usw2d-all.png" width="500" />
 
 
 #### SNPtv F-scores For 7 30x ILMN GIAB Samples, 3 Aligners, 5 SNV Callers (hg38)
 
-  <img src="results/us_west_2d/all/concordance/heatmaps/heatmap_SNPtv_hg38_usw2d-all.png">
+  <img src="results/us_west_2d/all/concordance/heatmaps/heatmap_SNPtv_hg38_usw2d-all.png" width="500" />
 
 #### Insertions < 50bp F-scores For 7 30x ILMN GIAB Samples, 3 Aligners, 5 SNV Callers (hg38)
 
-  <img src="results/us_west_2d/all/concordance/heatmaps/heatmap_INS_50_hg38_usw2d-all.png">
+  <img src="results/us_west_2d/all/concordance/heatmaps/heatmap_INS_50_hg38_usw2d-all.png" width="500" />
 
 #### Deletions < 50bp F-scores For 7 30x ILMN GIAB Samples, 3 Aligners, 5 SNV Callers (hg38)
 
-  <img src="results/us_west_2d/all/concordance/heatmaps/heatmap_INS_50_hg38_usw2d-all.png">
+  <img src="results/us_west_2d/all/concordance/heatmaps/heatmap_INS_50_hg38_usw2d-all.png" width="500" />
 
 
 ### Precision vs Recall
@@ -60,10 +59,10 @@
 > Best Recall `sentieon bwa`+`sentieon DNAscope` == 0.9961
 > Best Precision `strobe aligner`+`deepvariant` == 0.9993
 
-  <img src="results/us_west_2d/all/concordance/pvr/hg38_usw2d-all__All.png">
+  <img src="results/us_west_2d/all/concordance/pvr/hg38_usw2d-all__All.png" width="500" />
 
 #### 'Zoomed' Dataset, `All` Variant Classes, All Pipelines
-  <img src="results/us_west_2d/all/concordance/pvr/hg38_usw2d-all__All_zoom.png">
+  <img src="results/us_west_2d/all/concordance/pvr/hg38_usw2d-all__All_zoom.png" width="500" />
 
 #### Raw Concordance Metrics Dot Plots
   - [results/us_west_2d/all/concordance/raw_metrics](results/us_west_2d/all/concordance/raw_metrics)
@@ -73,21 +72,21 @@
 
 #### Total CPU Time Per Task
 *note!*: the deepvariant times are artificially long in these data.
-<img src="results/us_west_2d/all/benchmarks/usw2d-all_hg38_aggregated_runtime_cpu.png">
+<img src="results/us_west_2d/all/benchmarks/usw2d-all_hg38_aggregated_runtime_cpu.png" width="500" />
 
 #### EC2 Spot Cost Per Task (All)
 *note!*: the deepvariant times are artificially long in these data.
-<img src="results/us_west_2d/all/benchmarks/usw2d-all_hg38_aggregated_task_cost.png">
+<img src="results/us_west_2d/all/benchmarks/usw2d-all_hg38_aggregated_task_cost.png"  width="500" />
 
 #### EC2 Spot Cost per Task (targeted)
 _these are `euc1c-two` data, and deep variant costs are acurate for the AZ spot price market at that time.
-<img src="results/eu_central_1c/two/benchmarks/euc1c-two_hg38_raw_task_cost.png">
+<img src="results/eu_central_1c/two/benchmarks/euc1c-two_hg38_raw_task_cost.png" width="500" />
 
 #### Cost per vcpu per GB input fastq
 _useful in predicting per-sample analysis costs in advance of starting an ephemeral cluster_
 *note!*: the deepvariant times are artificially long in these data.
 
-<img src="results/us_west_2d/all/meta/hg38_usw2d-all_meta_ana_boxplot_cost_per_vcpu_sec_gb.png">
+<img src="results/us_west_2d/all/meta/hg38_usw2d-all_meta_ana_boxplot_cost_per_vcpu_sec_gb.png" width="500" />
 
 
 ---
