@@ -268,7 +268,7 @@ From the [daylily repo](), generate a spot instance pricing report.
 
 > This AZ had quota restrictions on how many spot instances could be run at one time, so it existed for 5hr. 
 >   - Fully parallelized without quota restrictions, the cluster would have completed processing in **1h 40m**.
-  <br><img src="docs/images/hg38_eu-central-1c_ephemeral_cluster_AWS_complete_costs.jpg" width="500" />
+  <br><img src="docs/images/hg38_eu-central-1c_ephemeral_cluster_AWS_complete_costs.jpg" width="600" />
 
   - `total AWS cost` (EC2, Fsx, networking, etc) to run this cluster = **$47.05**
     - `total EC2 compute` cost = **$41.50**
